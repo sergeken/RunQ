@@ -1,0 +1,130 @@
+workload Development
+{
+	processgroup compile with children
+	include
+	{
+		"gcc"
+		"g\+\+"
+		"c.."
+		"cpp"
+		"cc"
+		"as"
+	}
+	processgroup tools with children
+	include
+	{
+		"make"
+		"vi.*"
+		".*emacs.*"
+	}
+}
+
+workload Desktop
+{
+	processgroup kde with children
+	include
+	{
+		".*kde.*"
+		"kmail"
+		"kwrapper"
+	}
+	processgroup various_X11 with children
+	include
+	{
+		"hpterm"
+		"xterm"
+		"dt.*"
+	}
+}
+
+workload System
+{
+	processgroup runq
+	include
+	{
+		"runq.*"
+	}
+	processgroup other_perftools with children
+	include
+	{
+		"top"
+		"sar"
+	}
+	processgroup WWW with children
+	include
+	{
+		"apache"
+	}
+	processgroup X11 with children
+	include
+	{
+		"X.*"
+		"xfs"
+		"dbus\-.*"
+	}
+	exclude
+	{
+		".*sh"
+	}
+	processgroup Network
+	include
+	{
+		"inetd"
+		"telnetd"
+		"biod"
+		"bootpd"
+		"dced"
+		"sendmail"
+		"automount"
+		"nfs.*"
+		"rpc.*"
+		"netfmt"
+		"hpnpd"
+		"snmpdm"
+		"mib2agt"
+		"portmap"
+		"ssh.*"
+	}
+	processgroup System
+	include
+	{
+		"init"
+		"getty"
+		"swapper"
+		"vhand"
+		"registrar"
+		"cron"
+		"atd"
+		"strfreebd"
+		"strmem"
+		"strweld"
+		"supsched"
+		"swagentd"
+		"syncer"
+		"vxfsd"
+		"lvm.*"
+		".*logd"
+		".*daemon"
+		"ttisr"
+		"ttsession"
+		"diagmond"
+		"disk_em"
+		"dm_.*"
+		"ntl_reader"
+		"trapdestagt"
+		"pwgrd"
+		"lpsched"
+		"privoxy"
+	}
+	processgroup LostRoots
+	include
+	{
+		".*" : "root"
+		".*" : "daemon"
+	}
+	processgroup WildGroup
+	include 
+	{
+		".*"
+	}
+}

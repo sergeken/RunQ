@@ -1,0 +1,39 @@
+PROG=runq
+PLATFORM=linux
+
+SUBDIRS = misc datafile collectors analyzer compiler
+
+INCLUDES = -Idatafile -Ianalyzer -Imisc
+LIBDIR = $(PWD)/libs
+LIBS = $(LIBDIR)/libcollector.a $(LIBDIR)/lib$(PLATFORM).a $(LIBDIR)/libcompiler.a $(LIBDIR)/libanalyzer.a $(LIBDIR)/libdatafile.a $(LIBDIR)/libmisc.a
+SYSLIBS =
+
+CFLAGS=-O
+CXXFLAGS=$(CFLAGS) $(INCLUDES)
+
+CXX=g++
+
+OBJS=runq.o
+
+$(PROG):	$(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(PROG) $(OBJS) $(LIBS) $(SYSLIBS)
+
+$(LIBS): subdirs
+
+.PHONY:	subdirs
+subdirs:
+	cd misc;$(MAKE) CFLAGS=$(CFLAGS) LIBDIR=$(LIBDIR)
+	cd datafile;$(MAKE) CFLAGS=$(CFLAGS) LIBDIR=$(LIBDIR)
+	cd analyzer;$(MAKE) CFLAGS=$(CFLAGS) LIBDIR=$(LIBDIR)
+	cd compiler;$(MAKE) CFLAGS=$(CFLAGS) LIBDIR=$(LIBDIR)
+	cd collectors;$(MAKE) CFLAGS=$(CFLAGS) LIBDIR=$(LIBDIR)
+	cd collectors/$(PLATFORM);PLATFORM=$(PLATFORM) $(MAKE) CFLAGS=$(CFLAGS) LIBDIR=$(LIBDIR)
+
+clean:
+	cd misc;$(MAKE) clean
+	cd datafile;$(MAKE) clean
+	cd analyzer;$(MAKE) clean
+	cd compiler;$(MAKE) clean
+	cd collectors;$(MAKE) clean
+	cd collectors/$(PLATFORM);$(MAKE) clean
+	rm -f $(PROG) $(OBJS) $(LIBDIR)/*

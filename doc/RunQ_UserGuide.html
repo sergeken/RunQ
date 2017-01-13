@@ -1,0 +1,579 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.2.12 i686) [Netscape]">
+</head>
+<body>
+
+<center>
+<h1>
+RunQ user guide</h1></center>
+
+<p><br>This is a very brief user guide.&nbsp; A more extensive one will
+be available soon.
+<p>RunQ is a computer performance management tool.&nbsp; It is designed
+to provide IT professionals with a simple tool to keep track of the usage
+of their computer resources. It can be used to keep track of daily performance
+data and/or to do specific performance or capacity studies.
+<p>More information on how to use RunQ for specific tasks can be found
+in a not yet published document.
+<p>Currently it is only available on Sparc Solaris 2.6 and Intel Linux
+2.2 and 2.3 platform.&nbsp; Future versions are in development.
+<h2>
+<br>
+RunQ architecture</h2>
+
+<p><br>RunQ uses a two phase approach.&nbsp; First you have the data gathering
+phase, where performance metrics are collected and stored in a binary file
+for further processing.&nbsp; Secondly you have the data processing phase
+where the collected metrics are analyzed and presented.&nbsp; The data
+processing output can then be used directly or stored into a Performance
+Database for historical follow-up.
+<p>This version of RunQ is command line driven.&nbsp; It is our believe
+that to be a good performance management tool, you don't need a good looking
+GUI, but rather a compact, quick and functional utility.&nbsp; But the
+output of RunQ can be used directly by tools who can read comma separated
+value files (CSV) like for example spreadsheets.&nbsp; By this means you
+can produce any good looking graph you would like to see.&nbsp; Also once
+the data is stored into a database, you can use a lot of third party tools
+to explore the data.
+<h2>
+<br>
+RunQ options and commands</h2>
+
+<p><br>RunQ is driven by a single executable for both data gathering and
+data analyzing.&nbsp; This reduces the overall disk space needed for the
+tool.&nbsp; A trimmed down version for collection is also available for
+sites, which wants so.
+<h3>
+<br>
+Data collection</h3>
+
+<p><br>To invoke the data collector you need to start RunQ as follows:
+<br>&nbsp;
+<blockquote><tt>$ runq collect -m number_of_minutues [-d datafile] [-S
+span time] [-N]</tt>
+<blockquote><i>or</i></blockquote>
+<tt>$ rqcollect -m number_of_minutues [-d datafile] [-S span time] [-N]</tt></blockquote>
+
+<h4>
+<br>
+Description of the options:</h4>
+&nbsp;
+<table BORDER COLS=4 WIDTH="600" NOSAVE >
+<tr NOSAVE>
+<td WIDTH="10%" NOSAVE><b>Option</b></td>
+
+<td WIDTH="15%" NOSAVE><b>Default value</b></td>
+
+<td WIDTH="20%" NOSAVE><b>Type and format</b></td>
+
+<td WIDTH="55%" NOSAVE><b>Description</b></td>
+</tr>
+
+<tr NOSAVE>
+<td>-m</td>
+
+<td>No default</td>
+
+<td NOSAVE>integer</td>
+
+<td>Number of minutes the data collection process has to to run.</td>
+</tr>
+
+<tr>
+<td>-d</td>
+
+<td>perf.dat</td>
+
+<td>string</td>
+
+<td>The name of file where the performance metrics of this collection will
+be stored.</td>
+</tr>
+
+<tr>
+<td>-S</td>
+
+<td>60</td>
+
+<td>integer</td>
+
+<td>The number of seconds before a sample record would be written to the
+performance data file.</td>
+</tr>
+
+<tr>
+<td>-N</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Keeps collecting data without yielding the CPU.
+<br>User this option with care, as in this mode, the collector hogs the
+systeml and consumes all CPU&nbsp;cycles it can get.</td>
+</tr>
+</table>
+
+<h3>
+<br>
+Reporting overall consumption</h3>
+
+<p><br>To have brief report on global system usage during the data collection,
+you can invoke RunQ with the report option.
+<br>RunQ will show one line for each sample found the the performance data
+file.
+<blockquote>&nbsp;
+<br><tt>$ runq report [-d datafile] [-s start time] [-e end time] [-C]
+[-S]</tt></blockquote>
+
+<h4>
+<br>
+Description of the options:</h4>
+&nbsp;
+<table BORDER WIDTH="600" NOSAVE >
+<tr NOSAVE>
+<td WIDTH="10%" NOSAVE><b>Option</b></td>
+
+<td WIDTH="15%" NOSAVE><b>Default Value</b></td>
+
+<td WIDTH="20%" NOSAVE><b>Type and format</b></td>
+
+<td><b>Description</b></td>
+</tr>
+
+<tr>
+<td>-d</td>
+
+<td>perf.dat</td>
+
+<td>string</td>
+
+<td>The name of the file where the performance metrics are stored.</td>
+</tr>
+
+<tr>
+<td>-C</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Produce output in CSV format</td>
+</tr>
+
+<tr>
+<td>-S</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Report only the summary for the interval in CSV mode.</td>
+</tr>
+
+<tr>
+<td>-s</td>
+
+<td>00:00</td>
+
+<td>HH:MM</td>
+
+<td>Start time stamp for the report</td>
+</tr>
+
+<tr>
+<td>-e</td>
+
+<td>24:00</td>
+
+<td>HH:MM</td>
+
+<td>End time stamp for the report (that time <b>not</b> included)</td>
+</tr>
+</table>
+
+<h3>
+<br>
+Listing all processes</h3>
+
+<p><br>You can list all processes which were present on the system during
+the data collection period.
+<br>There will be one line for each process record for each sample.&nbsp;
+The data show in the listing are raw data and most of them are cumulative.&nbsp;
+This means that to know the resource consumption for user cpu for a single
+process you need to calculate the delta between two samples.
+<br>&nbsp;
+<blockquote><tt>$ runq procs [-d datafile] [-s start time] [-e end time]</tt></blockquote>
+
+<h4>
+Description of the options:</h4>
+&nbsp;
+<table BORDER WIDTH="600" NOSAVE >
+<tr NOSAVE>
+<td WIDTH="10%" NOSAVE><b>Option</b></td>
+
+<td WIDTH="15%" NOSAVE><b>Default Value</b></td>
+
+<td WIDTH="20%" NOSAVE><b>Type and format</b></td>
+
+<td><b>Description</b></td>
+</tr>
+
+<tr>
+<td>-d</td>
+
+<td>perf.dat</td>
+
+<td>string</td>
+
+<td>The name of the file where the performance metrics are stored.</td>
+</tr>
+
+<tr>
+<td>-T</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Output date and Time in DD-MM-YY ; HH:MM:SS format.</td>
+</tr>
+
+<tr>
+<td>-D</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Output time stamps as delta seconds s from the start.&nbsp; This option
+is not used if -T is also given.</td>
+</tr>
+
+<tr>
+<td>-s</td>
+
+<td>00:00</td>
+
+<td>HH:MM</td>
+
+<td>Start time stamp for the report</td>
+</tr>
+
+<tr>
+<td>-e</td>
+
+<td>24:00</td>
+
+<td>HH:MM</td>
+
+<td>End time stamp for the report (that time <b>not</b> included)</td>
+</tr>
+</table>
+
+<h3>
+<br>
+Analyzing a sample</h3>
+
+<p><br><tt>One of the key ideas behind RunQ is to analyze gathered performance
+metrics.</tt>
+<br><tt>The purpose of analyzing the data is to reduce the amount into
+key metric data and format it into an user understandable way.&nbsp; The
+outcome of the analyze phase is a system model describing the system at
+a certain point of time.&nbsp; Also once a system model has been build
+you can apply mathematics to that model to answer many questions capacity
+planners mostly ask.</tt>
+<p><tt>Currently RunQ does a basic job on analyzing and modeling the system.&nbsp;
+RunQ only reports CPU usage and the derivatives of it like service time
+and waiting time (which gives the response time). The waiting time is calculated
+according to the M/M/m queuing formula.</tt>
+<p><tt>The data reduction is done by grouping processes into groups and
+report the performance metrics against those groups.&nbsp; The purpose
+of the groups is also to group system processes into a single business
+unit.&nbsp; Also it is not uncommon that the execution of task on a Unix
+system, for example, involves many little processes.&nbsp; When using conventional
+tools like top or ps, you don't see the aggregate performance of all those
+little processes.</tt><tt></tt>
+<p><tt>During this analysis phase RunQ verifies the global CPU usage and
+the per process CPU usage.&nbsp; Due to the sampling technology RunQ misses
+some of the short lived processes.&nbsp; Short lived processes are processes
+who are created and died between two samples.&nbsp; In certain situations
+(like compiles of a lot of small sources on a powerful machine) this part
+can be a major part of the processes.&nbsp; RunQ has an option to activate
+an algorithm to interpolate this data.&nbsp; This algorithm is current
+very beta but helped already a lot.&nbsp; Also when running the collector
+over longer periods of time this unaccounted data tend to become a smaller
+portion of the activity.</tt>
+<br><tt></tt>&nbsp;
+<blockquote><tt>$ runq analyze [-d datafile] |-w workload_definition_file]
+[-s start time] [-e end time] [-C] [-F]</tt></blockquote>
+
+<h4>
+<br>
+Description of the options:</h4>
+&nbsp;
+<table BORDER WIDTH="600" NOSAVE >
+<tr NOSAVE>
+<td WIDTH="10%" NOSAVE><b>Option</b></td>
+
+<td WIDTH="15%" NOSAVE><b>Default Value</b></td>
+
+<td WIDTH="20%" NOSAVE><b>Type and format</b></td>
+
+<td><b>Description</b></td>
+</tr>
+
+<tr>
+<td>-d</td>
+
+<td>perf.dat</td>
+
+<td>string</td>
+
+<td>The name of the file where the performance metrics are stored.</td>
+</tr>
+
+<tr>
+<td>-w</td>
+
+<td>workloads.wkl</td>
+
+<td>string</td>
+
+<td>The name of the workload definition file.</td>
+</tr>
+
+<tr>
+<td>-C</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Produce output in CSV format</td>
+</tr>
+
+<tr>
+<td>-s</td>
+
+<td>00:00</td>
+
+<td>HH:MM</td>
+
+<td>Start time stamp for the report</td>
+</tr>
+
+<tr>
+<td>-e</td>
+
+<td>24:00</td>
+
+<td>HH:MM</td>
+
+<td>End time stamp for the report (that time <b>not</b> included)</td>
+</tr>
+
+<tr>
+<td>-F</td>
+
+<td>No</td>
+
+<td>-</td>
+
+<td>Use a interpolation algorithm to fix unaccounted CPU usage.&nbsp; This
+option is very beta but can be useful, as it is able to recover most of
+unaccounted CPU&nbsp;cycles.</td>
+</tr>
+</table>
+
+<h2>
+<br>
+Syntax of the process groups definition file</h2>
+
+<p><br>The workload definition files follow a very simple syntax.&nbsp;
+For defining the process names RunQ uses the regexp API of Unix.&nbsp;
+By using "man regexp" or "man -s3 regexp" you can find more information
+on
+<br>using wild cards, repeaters, etc...
+<br>RunQ always prepend the expression with an "^" and appends a "$".&nbsp;
+This is to enforce complete matching of the given expression.
+<p>The evaluation of the matching rules is done in order of the coding
+sequence in the source file.&nbsp; When a match has been found by the include
+rule or by PPID (in case of the with children clause), the process name
+is checked against the exclude rule.&nbsp; If a exclude matches, RunQ doesn't
+use that process group and carries on with next process group.
+If the optional argument is given in the regular expression, that argument is also taken into account.
+Arguments are given by using a plus sign "+" followed by a regular expression.
+To even have a more precise selection a username and a group name can be specified.
+This is done by appending a colon ":" followed by a regular expression for the user name, which
+is then followed by an optional plys sign "+" and regular expression for the group name.<br>
+<p>Also keep in mind that RunQ will check the child parent relationship
+before starting matching the expressions,&nbsp; but if there is a matching
+parent child relation ship it will always check the exclude list
+<br>to ensure that the match may be used.
+<p>Below you find the structure of a definition file.&nbsp; Mind that <tt><i>[with
+children]</i> means that the "with children clause" is optional and when
+used it has to be written without the brackets.</tt>
+<br>&nbsp;
+<blockquote><tt><b>workload</b> <i>wkl-id</i></tt>
+<br><tt><b>{</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; <b>processgroup</b> <i>pg-id</i> [<b>with children</b>]
+<br><tt>&nbsp;&nbsp;&nbsp; <b>include</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; <b>{</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "regular expression"
+[ <b>+</b> "regular expression" ] [ <b>:</b> "regular expression" [ <b>+</b> "regular expression" ] ]</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; <b>}</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; <b>exclude</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; <b>{</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "regular expression"
+[ <b>+</b> "regular expression" ] [ <b>:</b> "regular expression" [ <b>+</b> "regular expression" ] ]</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; <b>}</b></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; ....</tt>
+<br><tt><b>}</b></tt>
+<br><tt>....</tt></blockquote>
+
+<p><br><b><i>Be sure to define a ending process group with the ".*" wild
+card as catch-all!</i></b>
+<br>&nbsp;
+<h3>
+<br>
+Example of a definition file</h3>
+
+<blockquote><i><tt>workload Development</tt></i>
+<br><i><tt>{</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup compile
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"gcc"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"g'++'"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"cpp"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup tools</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"make"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"vi"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>}</tt></i>
+<p><i><tt>workload Office</tt></i>
+<br><i><tt>{</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup StarOffice
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"soffice.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup NetScape
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"netscape.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>}</tt></i>
+<p><i><tt>workload System</tt></i>
+<br><i><tt>{</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup runq</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"runq"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup KDE</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"X.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"xfs"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"k.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exclude</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"k.*d"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup Postgres
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"postmaster"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup Network</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"inetd"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"portmap"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"netserv"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*ppp.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*ftp.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup System</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"init"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*logd"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"cardmgr"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"autom.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"lpd"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"cron"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"getty"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"gpm"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"sendmail"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"exim"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*pkg.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"modprobe"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"rmmod"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"get_it"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup OtherRoots</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*" : "root"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup WildGroup</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>}</tt></i></blockquote>
+
+<hr><i>Last Updated 17-March-2001 <u><font color="#0000FF"><a href="mailto:serge.robyns@rc-s.be">serge.robyns@rc-s.be</a></font></u></i>
+<br>&nbsp;
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Surveyor user guide</title>
+</head>
+<body>
+
+<center>
+<h1>
+Surveyor user guide</h1></center>
+
+<p><br>This is a very brief user guide.&nbsp; A more extensive one will
+be available soon.
+<p>Surveyor is a simple tool to monitor running processes on a Unix system.
+Surveryor is a simple extention of RunQ by stripping down all datastorage and
+analysis code and adding a little process watch module which logs events to
+the Unix syslog.
+<p>Surveyor can be used to monitor CPU utilisation of processes.  When an
+event has occurred it logs it into the syslog.  Events can be one the
+following three:
+      1) A monitored process has died.
+      2) A monitored process has used more CPU than allowed.
+      3) A monitored process has used less CPU than required.
+
+<br>
+<h2>
+<br>
+Surveyor options</h2>
+
+<table BORDER COLS=4 WIDTH="600" NOSAVE >
+<tr NOSAVE>
+<td WIDTH="10%" NOSAVE><b>Option</b></td>
+
+<td WIDTH="15%" NOSAVE><b>Default value</b></td>
+
+<td WIDTH="20%" NOSAVE><b>Type and format</b></td>
+
+<td WIDTH="55%" NOSAVE><b>Description</b></td>
+</tr>
+
+<tr NOSAVE>
+<td>-v</td>
+
+<td>No default</td>
+
+<td NOSAVE>-</td>
+
+<td>Run in verbose mode (log additional info as LOG_DEBUG in syslog).</td>
+</tr>
+
+<caption ALIGN=BOTTOM>&nbsp;</caption>
+</table>
+
+<h2>
+<br>
+Syntax of the process groups definition file</h2>
+
+<p><br>The workload definition files follow a very simple syntax.&nbsp;
+For defining the process names RunQ uses the regexp API of Unix.&nbsp;
+By using "man regexp" or "man -s3 regexp" you can find more information
+on
+<br>using wild cards, repeaters, etc...
+<br>RunQ always prepend the expression with an "^" and appends a "$".&nbsp;
+This is to enforce complete matching of the given expression.
+<p>The evaluation of the matching rules is done in order of the coding
+sequence in the source file.&nbsp; When a match has been found by the include
+rule or by PPID (in case of the with children clause), the process name
+is checked against the exclude rule.&nbsp; If a exclude matches, RunQ doesn't
+use that process group and carries on with next process group.
+<br>Also keep in mind that RunQ will check the child parent relationship
+before starting matching the expressions,&nbsp; but if there is a matching
+parent child relation ship it will always check the exclude list
+<br>to ensure that the match may be used.
+<p>Below you find the structure of a definition file.&nbsp; Mind that <tt><i>[with
+children]</i> means that the "with children clause" is optional and when
+used it has to be written without the brackets.</tt>
+<br>&nbsp;
+<blockquote><tt>workload wkl-id</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; processgroup pg-id <i>[with children]</i></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; include</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "regular expression"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; exclude</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "regular expression"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; ....</tt>
+<br><tt>}</tt>
+<br><tt>....</tt></blockquote>
+
+<p><br><b><i>Be sure to define a ending process group with the ".*" wild
+card as catch-all!</i></b>
+<br>&nbsp;
+<h3>
+<br>
+Example of a definition file</h3>
+
+<blockquote><i><tt>workload Development</tt></i>
+<br><i><tt>{</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup compile
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"gcc"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"g'++'"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"cpp"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup tools</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"make"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"vi"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>}</tt></i>
+<p><i><tt>workload Office</tt></i>
+<br><i><tt>{</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup StarOffice
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"soffice.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup NetScape
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"netscape.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>}</tt></i>
+<p><i><tt>workload System</tt></i>
+<br><i><tt>{</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup runq</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"runq"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup KDE</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"X.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"xfs"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"k.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exclude</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"k.*d"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup Postgres
+with children</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"postmaster"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup Network</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"inetd"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"portmap"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"netserv"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*ppp.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*ftp.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup System</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"init"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*logd"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"cardmgr"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"autom.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"lpd"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"cron"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"getty"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"gpm"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"sendmail"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"exim"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*pkg.*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"modprobe"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"rmmod"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"get_it"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processgroup WildGroup</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+".*"</tt></i>
+<br><i><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></i>
+<br><i><tt>}</tt></i></blockquote>
+
+<hr><i>Last Updated 6-June-2000 <u><font color="#0000FF"><a href="mailto:serge.robyns@rc-s.be">serge.robyns@rc-s.be</a></font></u></i>
+<br>&nbsp;
+
+</body>
+</html>

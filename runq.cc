@@ -699,7 +699,7 @@ main (int argc, char** argv)
         default:
             cerr << endl
                  << "*** ERROR: Unhandled RunQ exception ("
-                 << error.error
+                 << static_cast <int> (error.error)
                  << "), aborting ..."
                  << endl;
             if (error.info != 0)

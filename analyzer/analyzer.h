@@ -74,7 +74,6 @@ inline bool ProcessFamily::operator!=(const ProcessFamily &right) const
 class Analyzer
 {
  public: 
-  Analyzer();
   void report(std::ostream & Output = std::cout);
   void analyze(PerfData & rawData, const bool fixTimes,
 	       DataStore * logFile = 0,
@@ -97,15 +96,15 @@ class Analyzer
 		        const char user[], const char group[]);
   
  public:
-  double userCPU;
-  double systemCPU;
-  double niceCPU;
-  double waitCPU;
-  double idleCPU;
-  double runQueue;
-  int numberOfCPUs;
-  double unaccountedUserCPU;
-  double unaccountedSystemCPU;
+  double userCPU = 0.0;
+  double systemCPU = 0.0;
+  double niceCPU = 0.0;
+  double waitCPU = 0.0;
+  double idleCPU = 0.0;
+  double runQueue = 0.0;
+  int numberOfCPUs = 0;
+  double unaccountedUserCPU = 0.0;
+  double unaccountedSystemCPU = 0.0;
   std::vector<WorkLoad> workLoads;
  private:
   void compileRegExps(DataStore * const logFile);

@@ -46,18 +46,6 @@ using std::endl;
 using std::cerr;
 
 
-Analyzer::Analyzer()
-{
-    userCPU = 0.0;
-    systemCPU = 0.0;
-    niceCPU = 0.0;
-    waitCPU = 0.0;
-    idleCPU = 0.0;
-    numberOfCPUs = 0;
-    unaccountedUserCPU = 0.0;
-    unaccountedSystemCPU = 0.0;
-}
-
 static inline bool
 excludeProcess (ProcessGroup aProcessGroup,
                 const char name[], const char args[],
@@ -98,19 +86,23 @@ Analyzer::processRawData (ProcessList & processList, PerfData & rawData,
                           const int endHour, const int endMinute)
 throw (RunQError)
 {
-    double idlecpu, waitcpu, usercpu, nicecpu, systemcpu;
-    int numOfSamples = 0;
+    auto idlecpu = 0.0;
+    auto waitcpu = 0.0;
+    auto usercpu = 0.0;
+    auto nicecpu = 0.0;
+    auto systemcpu = 0.0;
+    auto numOfSamples = 0;
     ProcessList previousProcesses;
 
     numberOfCPUs = rawData.staticData.CPU.availableCPUs;
 
     rawData.get ();
 
-    double i_idlecpu = rawData.dynamicData.CPU.idle;
-    double i_waitcpu = rawData.dynamicData.CPU.wait;
-    double i_usercpu = rawData.dynamicData.CPU.user;
-    double i_nicecpu = rawData.dynamicData.CPU.nice;
-    double i_systemcpu = rawData.dynamicData.CPU.system;
+    auto i_idlecpu = rawData.dynamicData.CPU.idle;
+    auto i_waitcpu = rawData.dynamicData.CPU.wait;
+    auto i_usercpu = rawData.dynamicData.CPU.user;
+    auto i_nicecpu = rawData.dynamicData.CPU.nice;
+    auto i_systemcpu = rawData.dynamicData.CPU.system;
     ProcessList initialProcesses = rawData.dynamicData.processList;
 
     try {
@@ -154,11 +146,6 @@ throw (RunQError)
     }
 
     if (numOfSamples <= 0) {
-        idleCPU = 0;
-        waitCPU = 0;
-        userCPU = 0;
-        niceCPU = 0;
-        systemCPU = 0;
         return;
     }
 
@@ -177,9 +164,9 @@ throw (RunQError)
         ProcessData* lastImage;
         lastImage = processList.findProcess (processListIterator.first.PID);
         if (lastImage != 0) {
-            // cout << "fixing " << lastImage->PID << " by " << iter->second.PID;
+            // cout << "fixing " << lastImage->PID << " by " << iter.second.PID;
             // cout << " : " << lastImage->systemTime
-            //	       << " - " <<iter->second.systemTime << endl;
+            //	       << " - " <<iter.second.systemTime << endl;
             lastImage->userTime -= processListIterator.second.userTime;
             lastImage->systemTime -= processListIterator.second.systemTime;
             lastImage->waitTime -= processListIterator.second.waitTime;
@@ -310,7 +297,8 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
                    const int startHour, const int startMinute,
                    const int endHour, const int endMinute)
 {
-    double sucpu = 0.0, sscpu = 0.0;
+    auto sucpu = 0.0;
+    auto sscpu = 0.0;
 
     ProcessList processList;
     ProcessData* process;
@@ -391,13 +379,13 @@ Analyzer::report (std::ostream & output)
     output << "CPU Sum: " << idleCPU + waitCPU + userCPU + niceCPU + systemCPU << endl;
 
     for (auto const & workLoads : workLoads) {
-        unsigned int wklProcessCount = 0;
-        double wklRSS = 0;
-        double wklUTime = 0;
-        double wklSTime = 0;
-        double wklWTime = 0;
-        unsigned long wklRBytes = 0;
-        unsigned long wklWBytes = 0;
+        auto wklProcessCount = 0u;
+        auto wklRSS = 0.0;
+        auto wklUTime = 0.0;
+        auto wklSTime = 0.0;
+        auto wklWTime = 0.0;
+        auto wklRBytes = 0ul;
+        auto wklWBytes = 0ul;
 
         output << "Workload " << workLoads.name << endl;
         for (auto const & processGroups : workLoads.processGroups) {

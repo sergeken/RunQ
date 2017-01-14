@@ -42,11 +42,9 @@ This program is distributed in the hope that it will be useful,
 
 class Model : public Analyzer  {
  public: 
-  void simulate(std::ostream & output = std::cout,
-  		const bool csvOutput = false);
+  void simulate(std::ostream & output = std::cout, const bool csvOutput = false);
  private:
-  double responseTime(const int numCPUs, const double utilisation,
-	  const double serviceTime);
+  double responseTime(const int numCPUs, const double utilisation, const double serviceTime);
 };
 
 #endif // RUNQ_MODEL_H

@@ -80,21 +80,17 @@ inline void StaticGroupData::get(DataStore& dataStore) throw(RunQError)
 
 inline void StaticGroupList::put(DataStore & dataStore) throw(RunQError)
 {
-  StaticGroupList::iterator groupListIterator;
-
-  int size = this->size();
+  size_t size = this->size();
   dataStore.put(&size, sizeof(size));
-  for (groupListIterator = begin();
-       groupListIterator != end();
-       groupListIterator++)
+  for (auto & groupListIterator : *this)
     {
-      groupListIterator->second.put(dataStore);
+      groupListIterator.second.put(dataStore);
     }
 }
 
 inline void StaticGroupList::get(DataStore & dataStore) throw(RunQError)
 {
-  int size;
+  size_t size;
   StaticGroupData aGroup;
 
   dataStore.get(&size, sizeof(size));

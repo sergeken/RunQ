@@ -80,21 +80,17 @@ inline void StaticUserData::get(DataStore& dataStore) throw(RunQError)
 
 inline void StaticUserList::put(DataStore & dataStore) throw(RunQError)
 {
-  StaticUserList::iterator userListIterator;
-
-  int size = this->size();
+  size_t size = this->size();
   dataStore.put(&size, sizeof(size));
-  for (userListIterator = begin();
-       userListIterator != end();
-       userListIterator++)
+  for (auto & userListIterator : *this)
     {
-      userListIterator->second.put(dataStore);
+      userListIterator.second.put(dataStore);
     }
 }
 
 inline void StaticUserList::get(DataStore & dataStore) throw(RunQError)
 {
-  int size;
+  size_t size;
   StaticUserData aUser;
 
   dataStore.get(&size, sizeof(size));

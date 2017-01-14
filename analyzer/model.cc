@@ -44,10 +44,9 @@ using std::endl;
 inline static double
 fac (const double n)
 {
-    double i;
-    double result = 1;
+    auto result = 1.0;
 
-    for (i = 1; i <= n; i++)
+    for (auto i = 1.0; i <= n; i++)
         result *= i;
 
     return result;
@@ -56,40 +55,35 @@ fac (const double n)
 inline static double
 ErlangC (const int numOfCPUs, const double utilisation)
 {
-    int k;
+    auto adjustedUtilization = utilisation * numOfCPUs;
+    auto ratio = pow (adjustedUtilization, numOfCPUs) / fac (numOfCPUs);
 
-    double adjustedUtilization = utilisation * numOfCPUs;
-    double ratio = pow (adjustedUtilization, numOfCPUs) / fac (numOfCPUs);
-
-    double sums = 1.0;
-    for (k = 1; k < numOfCPUs; k++)
+    auto sums = 1.0;
+    for (auto k = 1; k < numOfCPUs; k++)
         sums += pow (adjustedUtilization, k) / fac (k);
 
     return ratio / (ratio + (1.0 - utilisation) * sums);
 }
 
 double
-Model::responseTime (const int numOfCPUs, const double utilisation,
-                     const double serviceTime)
+Model::responseTime (const int numOfCPUs, const double utilisation, const double serviceTime)
 {
-    if (numOfCPUs == 1) {
+    if (numOfCPUs == 1)
         return serviceTime / (1 - utilisation);
-    } else {
-        return serviceTime + (ErlangC (numOfCPUs, utilisation) * serviceTime) /
-               (numOfCPUs * (1 - utilisation));
-    }
+    else
+        return serviceTime + (ErlangC (numOfCPUs, utilisation) * serviceTime) / (numOfCPUs * (1 - utilisation));
 }
 
 
 void
 Model::simulate (std::ostream & output, const bool csvOutput)
 {
-    double totalCPU = 0;
-    double elapsedCPU = 0;
-    double elapsedSeconds = 0;
-    double CPULoad = 0;
-    double CPUTime = 0;
-    double serviceTime = 0;
+    auto totalCPU = 0.0;
+    auto elapsedCPU = 0.0;
+    auto elapsedSeconds = 0.0;
+    auto CPULoad = 0.0;
+    auto CPUTime = 0.0;
+    auto serviceTime = 0.0;
 
     for (auto const & workLoads : workLoads) {
         for (auto const & processGroups : workLoads.processGroups) {
@@ -123,7 +117,7 @@ Model::simulate (std::ostream & output, const bool csvOutput)
 
     for (auto const & workLoads : workLoads) {
         double wklCPU = 0;
-        int wklProcessCount = 0;
+        auto wklProcessCount = 0;
         if (!csvOutput)
             output << "Workload : " << workLoads.name << endl;
         for (auto const & processGroups : workLoads.processGroups) {

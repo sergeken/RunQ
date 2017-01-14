@@ -44,7 +44,7 @@ This program is distributed in the hope that it will be useful,
 class RegExpRule
 {
  public:
-  RegExpRule() {};
+  RegExpRule() = default;
   RegExpRule(const char aName[], const char anArg[]="",
 	     const char aUser[]="", const char aGroup[]="")
     {

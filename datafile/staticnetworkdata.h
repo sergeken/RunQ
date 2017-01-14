@@ -76,21 +76,15 @@ inline void StaticNetworkInterfaceData::get(DataStore& dataStore) throw(RunQErro
 
 inline void StaticNetworkData::put(DataStore & dataStore) throw(RunQError)
 {
-  std::vector<StaticNetworkInterfaceData>::iterator interfaceIterator;
-
-  int size = interfaces.size();
+  size_t size = interfaces.size();
   dataStore.put(&size, sizeof(size));
-  for (interfaceIterator = interfaces.begin();
-       interfaceIterator != interfaces.end();
-       interfaceIterator++)
-    {
-      interfaceIterator->put(dataStore);
-    }
+  for (auto & interfaceIterator : interfaces)
+      interfaceIterator.put(dataStore);
 }
 
 inline void StaticNetworkData::get(DataStore & dataStore) throw(RunQError)
 {
-  int size;
+  size_t size;
   StaticNetworkInterfaceData interface;
 
   dataStore.get(&size, sizeof(size));

@@ -47,8 +47,7 @@ This program is distributed in the hope that it will be useful,
 class ProcessID
 {
  public:
-  ProcessID(const long aPID = 0, const long aPPID = 0)
-    { PID = aPID; PPID = aPPID; };
+  ProcessID(const long aPID = 0, const long aPPID = 0) : PID {aPID}, PPID {aPPID} {}
   bool operator== (const ProcessID &rigth) const;
   bool operator!= (const ProcessID &rigth) const;
   bool operator< (const ProcessID &rigth) const;
@@ -133,9 +132,7 @@ inline void ProcessData::put(DataStore& dataStore) throw(RunQError)
 
 inline ProcessData * ProcessList::findProcess(const ProcessID PID)
 {
-  ProcessList::iterator processListIterator;
-
-  processListIterator = find(PID);
+  auto processListIterator = find(PID);
   if (processListIterator == end())
     return 0;
   else
@@ -144,15 +141,12 @@ inline ProcessData * ProcessList::findProcess(const ProcessID PID)
 
 inline ProcessList ProcessList::findChildren(const long PPID)
 {
-  ProcessList::iterator processListIterator;
-  ProcessList myList;
+   ProcessList myList;
 
-  for (processListIterator = begin();
-       processListIterator != end();
-       processListIterator++)
+  for (auto & processListIterator : *this)
     {
-      if (processListIterator->second.PPID == PPID)
-	myList[processListIterator->second.PID] = processListIterator->second;
+      if (processListIterator.second.PPID == PPID)
+	myList[processListIterator.second.PID] = processListIterator.second;
     }
   return myList;
 }

@@ -69,7 +69,7 @@ inline void DynamicPerfData::get(DataStore& dataStore) throw(RunQError)
   memory.get(dataStore);
 
   ProcessData process;
-  int size;
+  size_t size;
 
   processList.clear();
   dataStore.get(&size, sizeof(size));
@@ -87,16 +87,11 @@ inline void DynamicPerfData::put(DataStore& dataStore) throw(RunQError)
   IO.put(dataStore);
   memory.put(dataStore);
 
-  int size = processList.size();
+  size_t size = processList.size();
   dataStore.put(&size, sizeof(size));
 
-  ProcessList::iterator processIterator;
-  for (processIterator=processList.begin();
-       processIterator!=processList.end();
-       processIterator++)
-    {
-      processIterator->second.put(dataStore);
-    }
+  for (auto & processIterator : processList)
+      processIterator.second.put(dataStore);
   processList.clear();
 }
 

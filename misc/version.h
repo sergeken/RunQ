@@ -37,6 +37,6 @@ This program is distributed in the hope that it will be useful,
  */
 
 #define RUNQ_PRODUCT_NAME "RunQ"
-#define RUNQ_VERSION "1.9"
+#define RUNQ_VERSION "1.10"
 
 #endif // RUNQ_VERSION_H

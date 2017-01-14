@@ -49,21 +49,17 @@ This program is distributed in the hope that it will be useful,
 
 #define RUNQ_RAWDATA_FILE "RAWPERFDATA"
 
-class RunQFileType
+enum class RunQFileType
 {
- public:
-  enum RunQFileTypes
-  {
     UnTyped = 0,
     RawData
-  };
 };
 
 class MagicID
 {
  public:
-  MagicID() {};
-  MagicID(const RunQFileType::RunQFileTypes aFileType)
+  MagicID() = default;
+  MagicID(const RunQFileType aFileType)
     {
       strcpy(productName, RUNQ_PRODUCT_NAME);
       strcpy(version, RUNQ_VERSION);
@@ -86,17 +82,14 @@ class DataStore : public std::fstream
 {
  public:
   DataStore() : std::fstream() {};
-  DataStore(const char name[], const std::_Ios_Openmode mode,
-	    const RunQFileType::RunQFileTypes fileType)
+  DataStore(const char name[], const std::_Ios_Openmode mode, RunQFileType fileType)
     throw(RunQError);
-  void open(const char name[], const std::_Ios_Openmode mode,
-	    const RunQFileType::RunQFileTypes fileType)
+  void open(const char name[], const std::_Ios_Openmode mode, const RunQFileType fileType)
     throw(RunQError);
   void put(void *data, const size_t size) throw(RunQError);
   void get(void *data, const size_t size) throw(RunQError);
  private:
-  void checkFileType(const std::_Ios_Openmode mode,
-		     const RunQFileType::RunQFileTypes fileType)
+  void checkFileType(const std::_Ios_Openmode mode, const RunQFileType fileType)
     throw(RunQError);
  private:
   MagicID magicID;

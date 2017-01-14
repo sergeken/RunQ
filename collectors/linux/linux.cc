@@ -20,7 +20,6 @@
 
 #include <pwd.h>
 #include <grp.h>
-//#include <asm-generic/page.h>
 #include <sys/utsname.h>
 
 #include <iostream>

@@ -76,21 +76,15 @@ inline void StaticDiskData::get(DataStore& dataStore) throw(RunQError)
 
 inline void StaticIOData::put(DataStore & dataStore) throw(RunQError)
 {
-  std::vector<StaticDiskData>::iterator diskDataIterator;
-
-  int size = diskData.size();
+  size_t size = diskData.size();
   dataStore.put(&size, sizeof(size));
-  for (diskDataIterator = diskData.begin();
-       diskDataIterator != diskData.end();
-       diskDataIterator++)
-    {
-      diskDataIterator->put(dataStore);
-    }
+  for (auto & diskDataIterator : diskData)
+      diskDataIterator.put(dataStore);
 }
 
 inline void StaticIOData::get(DataStore & dataStore) throw(RunQError)
 {
-  int size;
+  size_t size;
   StaticDiskData disk;
 
   dataStore.get(&size, sizeof(size));

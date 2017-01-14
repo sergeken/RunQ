@@ -8,7 +8,7 @@ LIBDIR = $(PWD)/libs
 LIBS = $(LIBDIR)/libcollector.a $(LIBDIR)/lib$(PLATFORM).a $(LIBDIR)/libcompiler.a $(LIBDIR)/libanalyzer.a $(LIBDIR)/libdatafile.a $(LIBDIR)/libmisc.a
 SYSLIBS =
 
-CFLAGS=-Ofast -Wall -Wextra
+CFLAGS=-Ofast -Wall -Wextra -Wconversion -Wcast-align -Wformat=2 -Wstrict-overflow -Wtrampolines -Woverloaded-virtual -Wreorder -Wsign-promo -Wnull-dereference -Wmisleading-indentation -Wlogical-op -Wunused-variable
 CXXFLAGS=$(CFLAGS) $(INCLUDES)
 
 CXX=g++

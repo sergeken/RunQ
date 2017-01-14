@@ -4,7 +4,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 06 jan 2000
  * VERSION : 1.00 (18-mar-2000)
  *
@@ -18,12 +18,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -38,77 +38,70 @@ This program is distributed in the hope that it will be useful,
 #include "datastore.h"
 
 DataStore::DataStore(const char name[], const std::_Ios_Openmode mode,
-		     const RunQFileType::RunQFileTypes aFileType)
-   throw(RunQError) : std::fstream(name, mode)
+                     const RunQFileType::RunQFileTypes aFileType)
+throw (RunQError) : std::fstream (name, mode)
 {
-  checkFileType(mode, aFileType);
+    checkFileType (mode, aFileType);
 }
 
-void DataStore::open(const char name[], const std::_Ios_Openmode mode,
-		     const RunQFileType::RunQFileTypes aFileType)
-  throw(RunQError)
+void
+DataStore::open (const char name[], const std::_Ios_Openmode mode,
+                 const RunQFileType::RunQFileTypes aFileType)
+throw (RunQError)
 {
-  std::fstream::open(name, mode);
-  if ( ! is_open() )
-    throw RunQError(RunQError::FileNotFound, strdup(name));
-  checkFileType(mode, aFileType);
+    std::fstream::open (name, mode);
+    if (!is_open ())
+        throw RunQError (RunQError::FileNotFound, strdup (name));
+    checkFileType (mode, aFileType);
 }
 
-void DataStore::get(void *data, const size_t size) throw(RunQError)
+void
+DataStore::get (void*data, const size_t size) throw (RunQError)
 {
-  this->read((char*)data, size);
-  if ( ! *this )
-    throw RunQError(RunQError::FileError, "DataStore::get");
+    read ((char*)data, size);
+    if (!*this)
+        throw RunQError (RunQError::FileError, "DataStore::get");
 }
 
-void DataStore::put(void *data, const size_t size) throw(RunQError)
+void
+DataStore::put (void*data, const size_t size) throw (RunQError)
 {
-  this->write((char*)data, size);
-  if ( ! *this )
-    throw RunQError(RunQError::FileError, "DataStore::put");
+    write ((char*)data, size);
+    if (!*this)
+        throw RunQError (RunQError::FileError, "DataStore::put");
 }
 
-void DataStore::checkFileType(const std::_Ios_Openmode mode,
-			      const RunQFileType::RunQFileTypes aFileType)
-  throw(RunQError)
+void
+DataStore::checkFileType (const std::_Ios_Openmode mode,
+                          const RunQFileType::RunQFileTypes aFileType)
+throw (RunQError)
 {
-  MagicID aMagicID(aFileType);
+    MagicID aMagicID (aFileType);
 
-  if (mode & ios_base::out)
-    {
-      magicID = aMagicID;
-      switch (aFileType)
-	{
-	case RunQFileType::RawData:
-	  {
-	    this->write((char*)&magicID, sizeof(MagicID));
-	  }
-	  break;	  
-	default:
-	  break;
-	}
-    }
-  else if (mode & ios_base::in)
-    {
-      switch (aFileType)
-	{
-	case RunQFileType::RawData:
-	  {
-	    this->read((char*)&magicID, sizeof(MagicID));
-	    if (strcmp(magicID.productName, aMagicID.productName) != 0)
-	      throw RunQError(RunQError::InvalidFile);
-	    if (strcmp(magicID.fileType, aMagicID.fileType) != 0)
-	      throw RunQError(RunQError::InvalidFile);
-	    if (strcmp(magicID.version, aMagicID.version) != 0)
-	      throw RunQError(RunQError::InvalidVersion, aMagicID.version);
-	  }
-	  break;	  
-	default:
-	  break;
-	}
-    }
-  else
-    {
-      throw RunQError(RunQError::InternalError);
+    if (mode & ios_base::out) {
+        magicID = aMagicID;
+        switch (aFileType) {
+        case RunQFileType::RawData:
+            write ((char*)&magicID, sizeof(MagicID));
+            break;
+        default:
+            break;
+        }
+    } else if (mode & ios_base::in) {
+        switch (aFileType) {
+        case RunQFileType::RawData:
+            read ((char*)&magicID, sizeof(MagicID));
+            if (strcmp (magicID.productName, aMagicID.productName) != 0)
+                throw RunQError (RunQError::InvalidFile);
+            if (strcmp (magicID.fileType, aMagicID.fileType) != 0)
+                throw RunQError (RunQError::InvalidFile);
+            if (strcmp (magicID.version, aMagicID.version) != 0)
+                throw RunQError (RunQError::InvalidVersion, aMagicID.version);
+            break;
+        default:
+            break;
+        }
+    } else {
+        throw RunQError (RunQError::InternalError);
     }
 }

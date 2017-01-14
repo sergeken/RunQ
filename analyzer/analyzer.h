@@ -63,12 +63,12 @@ class ProcessFamily
 
 inline bool ProcessFamily::operator==(const ProcessFamily &right) const
 {
-  return this->PPID == right.PPID;
+  return PPID == right.PPID;
 }
 
 inline bool ProcessFamily::operator!=(const ProcessFamily &right) const
 {
-  return this->PPID != right.PPID;
+  return PPID != right.PPID;
 }
 
 class Analyzer

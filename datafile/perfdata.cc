@@ -37,15 +37,13 @@ This program is distributed in the hope that it will be useful,
 
 void PerfData::create(const char fileName[]) throw(RunQError)
 {
-  dataStore.open((char*)fileName, std::ios_base::binary | std::ios_base::out,
-  	         RunQFileType::RawData);
+  dataStore.open((char*)fileName, std::ios_base::binary | std::ios_base::out, RunQFileType::RawData);
   staticData.put(dataStore);
 }
 
 void PerfData::open(const char fileName[]) throw(RunQError)
 {
-  dataStore.open((char*)fileName, std::ios_base::binary | std::ios_base::in,
-  		 RunQFileType::RawData);
+  dataStore.open((char*)fileName, std::ios_base::binary | std::ios_base::in,  		 RunQFileType::RawData);
   staticData.get(dataStore);
 }
 

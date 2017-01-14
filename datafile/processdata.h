@@ -60,7 +60,7 @@ class ProcessID
 
 inline bool ProcessID::operator== (const ProcessID &rigth) const 
 {
-  return this->PID == rigth.PID && this->PPID == rigth.PPID;
+  return PID == rigth.PID && PPID == rigth.PPID;
 }
 
 inline bool ProcessID::operator!= (const ProcessID &rigth)  const 
@@ -70,7 +70,7 @@ inline bool ProcessID::operator!= (const ProcessID &rigth)  const
 
 inline bool ProcessID::operator< (const ProcessID &rigth)  const 
 {
-  return this->PID < rigth.PID;
+  return PID < rigth.PID;
 }
 
 struct ProcessID_lt
@@ -135,8 +135,8 @@ inline ProcessData * ProcessList::findProcess(const ProcessID PID)
 {
   ProcessList::iterator processListIterator;
 
-  processListIterator = this->find(PID);
-  if (processListIterator == this->end())
+  processListIterator = find(PID);
+  if (processListIterator == end())
     return 0;
   else
     return &(processListIterator->second);
@@ -147,8 +147,8 @@ inline ProcessList ProcessList::findChildren(const long PPID)
   ProcessList::iterator processListIterator;
   ProcessList myList;
 
-  for (processListIterator = this->begin();
-       processListIterator != this->end();
+  for (processListIterator = begin();
+       processListIterator != end();
        processListIterator++)
     {
       if (processListIterator->second.PPID == PPID)

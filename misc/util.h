@@ -45,7 +45,7 @@ This program is distributed in the hope that it will be useful,
 #include "version.h"
 
 void usage(std::ostream & output);
-bool beforeTime(time_t * inTimeStamp, int hour, int minute);
+bool beforeTime(const time_t & inTimeStamp, const int hour, const int minute);
 void parseTime(char timeString[], int &hour, int &minute);
 void runQLogo(std::ostream & output) throw(RunQError);
 

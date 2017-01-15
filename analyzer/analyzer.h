@@ -41,6 +41,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 
 #include "datastore.h"
 #include "perfdata.h"
@@ -95,11 +96,10 @@ private:
                     const int startHour, const int startMinute,
                     const int endHour, const int endMinute)
     throw (RunQError);
-    bool
-    findProcessGroup (WorkLoad* & theWorkLoad,
-                      ProcessGroup* & theProcessGroup,
-                      const char name[], const char args[],
+    std::tuple <bool, WorkLoad*, ProcessGroup*>
+    findProcessGroup (const char name[], const char args[],
                       const char user[], const char group[]);
+
 
 public:
     double userCPU = 0.0;

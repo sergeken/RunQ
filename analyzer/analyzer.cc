@@ -208,22 +208,16 @@ Analyzer::addProcessToGroup (PerfData & rawData,
 }
 
 
-bool
-Analyzer::findProcessGroup (WorkLoad* & theWorkLoad,
-                            ProcessGroup* & theProcessGroup,
-                            const char name[], const char args[],
+inline std::tuple <bool, WorkLoad*, ProcessGroup*>
+Analyzer::findProcessGroup (const char name[], const char args[],
                             const char user[], const char group[])
 {
     for (auto & workLoad : workLoads)
         for (auto & processGroup : workLoad.processGroups)
-            if (includeProcess (processGroup, name, args, user, group)) {
-                theWorkLoad = &workLoad;
-                theProcessGroup = &processGroup;
-                return true;
-            }
-    return false;
+            if (includeProcess (processGroup, name, args, user, group))
+                return {true, &workLoad, &processGroup};
+    return {false, nullptr, nullptr};
 }
-
 
 
 void
@@ -268,10 +262,13 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
         }
 
         // Second, new allocations
-        WorkLoad*            aWorkLoad;
-        ProcessGroup*        aProcessGroup;
-        if (findProcessGroup (aWorkLoad, aProcessGroup, iter.second.name, iter.second.args, rawData.staticData.users[iter.second.uid].name,
-                              rawData.staticData.groups[iter.second.gid].name)) {
+        bool found;
+        WorkLoad* aWorkLoad;
+        ProcessGroup* aProcessGroup;
+        std::tie (found, aWorkLoad, aProcessGroup) = findProcessGroup (iter.second.name, iter.second.args,
+                                                                       rawData.staticData.users[iter.second.uid].name,
+                                                                       rawData.staticData.groups[iter.second.gid].name);
+        if (found) {
             addProcessToGroup (rawData, logFile, *aWorkLoad, *aProcessGroup, iter.second);
             if (aProcessGroup->withChildren) {
                 ProcessFamily newProcessFamilyEntry (iter.second.PID, aWorkLoad, aProcessGroup);

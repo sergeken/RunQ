@@ -107,7 +107,6 @@ class Analyzer
   double unaccountedSystemCPU = 0.0;
   std::vector<WorkLoad> workLoads;
  private:
-  void compileRegExps(DataStore * const logFile);
   void addProcessToGroup(PerfData & rawData,
 			 DataStore * const logFile,
 			 const WorkLoad theWorkload,

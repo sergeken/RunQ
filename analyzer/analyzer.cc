@@ -53,9 +53,9 @@ excludeProcess (ProcessGroup aProcessGroup,
 {
     for (auto const & regExps : aProcessGroup.excludeProcs)
         if (regexec (&regExps.name.preg, name, 0, 0, 0) == 0
-            && (strlen (regExps.args.expression) == 0 || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
-            && (strlen (regExps.user.expression) == 0 || regexec (&regExps.user.preg, user, 0, 0, 0) == 0)
-            && (strlen (regExps.group.expression) == 0 || regexec (&regExps.group.preg, group, 0, 0, 0) == 0)
+            && (regExps.args.expression != "" || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
+            && (regExps.user.expression != "" || regexec (&regExps.user.preg, user, 0, 0, 0) == 0)
+            && (regExps.group.expression != "" || regexec (&regExps.group.preg, group, 0, 0, 0) == 0)
             )
             return true;
 
@@ -69,9 +69,9 @@ includeProcess (ProcessGroup aProcessGroup,
 {
     for (auto const & regExps : aProcessGroup.includeProcs)
         if (regexec (&regExps.name.preg, name, 0, 0, 0) == 0
-            && (strlen (regExps.args.expression) == 0 || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
-            && (strlen (regExps.user.expression) == 0 || regexec (&regExps.user.preg, user, 0, 0, 0) == 0)
-            && (strlen (regExps.group.expression) == 0 || regexec (&regExps.group.preg, group, 0, 0, 0) == 0)
+            && (regExps.args.expression != "" || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
+            && (regExps.user.expression != "" || regexec (&regExps.user.preg, user, 0, 0, 0) == 0)
+            && (regExps.group.expression != "" || regexec (&regExps.group.preg, group, 0, 0, 0) == 0)
             )
             if (!excludeProcess (aProcessGroup, name, args, user, group))
                 return true;
@@ -181,64 +181,6 @@ throw (RunQError)
 
 
 void
-Analyzer::compileRegExps (DataStore* const logFile)
-{
-    for (auto & aWorkLoad : workLoads) {
-        if (logFile != 0)
-            *logFile << "Workload " << aWorkLoad.name << endl;
-        for (auto & aProcessGroup : aWorkLoad.processGroups) {
-            if (logFile != 0)
-                *logFile << "  Group " << aProcessGroup.name << endl;
-            for (auto & iRegExps : aProcessGroup.includeProcs) {
-                if (logFile != 0)
-                    *logFile << "    iexpression " << iRegExps.name.expression;
-                regcomp (&iRegExps.name.preg, iRegExps.name.expression, REG_NOSUB);
-                if (strlen (iRegExps.args.expression) > 0) {
-                    if (logFile != 0)
-                        *logFile << " + " << iRegExps.args.expression;
-                    regcomp (&iRegExps.args.preg, iRegExps.args.expression, REG_NOSUB);
-                }
-                if (strlen (iRegExps.user.expression) > 0) {
-                    if (logFile != 0)
-                        *logFile << " + " << iRegExps.user.expression;
-                    regcomp (&iRegExps.user.preg, iRegExps.user.expression, REG_NOSUB);
-                }
-                if (strlen (iRegExps.group.expression) > 0) {
-                    if (logFile != 0)
-                        *logFile << " + " << iRegExps.group.expression;
-                    regcomp (&iRegExps.group.preg, iRegExps.group.expression, REG_NOSUB);
-                }
-                if (logFile != 0)
-                    *logFile << endl;
-            }
-            for (auto & eRegExps : aProcessGroup.excludeProcs) {
-                if (logFile != 0)
-                    *logFile << "    eexpression " << eRegExps.name.expression;
-                regcomp (&eRegExps.name.preg, eRegExps.name.expression, REG_NOSUB);
-                if (strlen (eRegExps.args.expression) > 0) {
-                    if (logFile != 0)
-                        *logFile << " + " << eRegExps.args.expression;
-                    regcomp (&eRegExps.args.preg, eRegExps.args.expression, REG_NOSUB);
-                }
-                if (strlen (eRegExps.user.expression) > 0) {
-                    if (logFile != 0)
-                        *logFile << " + " << eRegExps.user.expression;
-                    regcomp (&eRegExps.user.preg, eRegExps.user.expression, REG_NOSUB);
-                }
-                if (strlen (eRegExps.group.expression) > 0) {
-                    if (logFile != 0)
-                        *logFile << " + " << eRegExps.group.expression;
-                    regcomp (&eRegExps.group.preg, eRegExps.group.expression, REG_NOSUB);
-                }
-                if (logFile != 0)
-                    *logFile << endl;
-            }
-        }
-    }
-}
-
-
-void
 Analyzer::addProcessToGroup (PerfData & rawData,
                              DataStore* const logFile,
                              const WorkLoad theWorkLoad,
@@ -318,8 +260,6 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
 
     unaccountedUserCPU = userCPU + niceCPU - sucpu;
     unaccountedSystemCPU = systemCPU - sscpu;
-
-    compileRegExps (logFile);
 
     // Start assigning Process to WorkLoads
     for (auto & iter : processList) {

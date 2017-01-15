@@ -36,25 +36,19 @@ This program is distributed in the hope that it will be useful,
  *
  */
 
+#include <string>
 #include <regex.h>
-
-#include <stdio.h>
 
 #include "datastore.h"
 
 class RegExp {
  public:
-  RegExp() {expression[0] = '\0';};
-  RegExp(const char Input[]);
-
- public:
-  char	expression[32];
+  std::string	expression;
   regex_t preg;
-};
 
-inline RegExp::RegExp(const char input[])
-{
-  strcpy(expression, input);
-}
+  RegExp() = default;
+  RegExp(const std::string input) : expression{input}
+     { regcomp (&preg, expression.c_str (), REG_NOSUB); }
+};
 
 #endif // RUNQ_REGEXP_H

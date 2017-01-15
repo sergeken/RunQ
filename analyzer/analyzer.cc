@@ -46,42 +46,41 @@ using std::endl;
 using std::cerr;
 
 
-static inline bool
-excludeProcess (ProcessGroup aProcessGroup,
+static bool
+excludeProcess (const ProcessGroup & aProcessGroup,
                 const char name[], const char args[],
                 const char user[], const char group[])
 {
-    for (auto const & regExps : aProcessGroup.excludeProcs)
-        if (regexec (&regExps.name.preg, name, 0, 0, 0) == 0
-            && (regExps.args.expression != "" || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
-            && (regExps.user.expression != "" || regexec (&regExps.user.preg, user, 0, 0, 0) == 0)
-            && (regExps.group.expression != "" || regexec (&regExps.group.preg, group, 0, 0, 0) == 0)
+    for (auto const & regExp : aProcessGroup.excludeProcs)
+        if (regexec (&regExp.name.preg, name, 0, 0, 0) == 0
+            && (regExp.args.expression != "" || regexec (&regExp.args.preg, args, 0, 0, 0) == 0)
+            && (regExp.user.expression != "" || regexec (&regExp.user.preg, user, 0, 0, 0) == 0)
+            && (regExp.group.expression != "" || regexec (&regExp.group.preg, group, 0, 0, 0) == 0)
             )
             return true;
-
     return false;
 }
 
-static inline bool
-includeProcess (ProcessGroup aProcessGroup,
+
+static bool
+includeProcess (const ProcessGroup & aProcessGroup,
                 const char name[], const char args[],
                 const char user[], const char group[])
 {
-    for (auto const & regExps : aProcessGroup.includeProcs)
-        if (regexec (&regExps.name.preg, name, 0, 0, 0) == 0
-            && (regExps.args.expression != "" || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
-            && (regExps.user.expression != "" || regexec (&regExps.user.preg, user, 0, 0, 0) == 0)
-            && (regExps.group.expression != "" || regexec (&regExps.group.preg, group, 0, 0, 0) == 0)
+    for (auto const & regExp : aProcessGroup.includeProcs)
+        if (regexec (&regExp.name.preg, name, 0, 0, 0) == 0
+            && (regExp.args.expression != "" || regexec (&regExp.args.preg, args, 0, 0, 0) == 0)
+            && (regExp.user.expression != "" || regexec (&regExp.user.preg, user, 0, 0, 0) == 0)
+            && (regExp.group.expression != "" || regexec (&regExp.group.preg, group, 0, 0, 0) == 0)
             )
             if (!excludeProcess (aProcessGroup, name, args, user, group))
                 return true;
-
     return false;
 }
 
-void
-Analyzer::processRawData (ProcessList & processList, PerfData & rawData,
-                          const bool fixTimes,
+
+ProcessList
+Analyzer::processRawData (PerfData & rawData, const bool fixTimes,
                           const int startHour, const int startMinute,
                           const int endHour, const int endMinute)
 throw (RunQError)
@@ -92,7 +91,8 @@ throw (RunQError)
     auto nicecpu = 0.0;
     auto systemcpu = 0.0;
     auto numOfSamples = 0;
-    ProcessList previousProcesses;
+    auto processList = ProcessList {};
+    auto previousProcesses = ProcessList {};
 
     numberOfCPUs = rawData.staticData.CPU.availableCPUs;
 
@@ -103,7 +103,7 @@ throw (RunQError)
     auto i_usercpu = rawData.dynamicData.CPU.user;
     auto i_nicecpu = rawData.dynamicData.CPU.nice;
     auto i_systemcpu = rawData.dynamicData.CPU.system;
-    ProcessList initialProcesses = rawData.dynamicData.processList;
+    auto initialProcesses = rawData.dynamicData.processList;
 
     try {
         for (;; ) {
@@ -145,49 +145,43 @@ throw (RunQError)
         }
     }
 
-    if (numOfSamples <= 0) {
-        return;
-    }
+    if (0 < numOfSamples) {
+        idleCPU = idlecpu - i_idlecpu;
+        waitCPU = waitcpu - i_waitcpu;
+        userCPU = usercpu - i_usercpu;
+        niceCPU = nicecpu - i_nicecpu;
+        systemCPU = systemcpu - i_systemcpu;
 
-    idleCPU = idlecpu - i_idlecpu;
-    waitCPU = waitcpu - i_waitcpu;
-    userCPU = usercpu - i_usercpu;
-    niceCPU = nicecpu - i_nicecpu;
-    systemCPU = systemcpu - i_systemcpu;
-
-    for (auto const & processListIterator : initialProcesses) {
-        // Forget about badly formed names.
-        // seems to happen sometimes on Solaris
-        if (!isprint (processListIterator.second.name[0]))
-            continue;
-
-        ProcessData* lastImage;
-        lastImage = processList.findProcess (processListIterator.first.PID);
-        if (lastImage != 0) {
-            // cout << "fixing " << lastImage->PID << " by " << iter.second.PID;
-            // cout << " : " << lastImage->systemTime
-            //	       << " - " <<iter.second.systemTime << endl;
-            lastImage->userTime -= processListIterator.second.userTime;
-            lastImage->systemTime -= processListIterator.second.systemTime;
-            lastImage->waitTime -= processListIterator.second.waitTime;
-            lastImage->sleepTime -= processListIterator.second.sleepTime;
-            lastImage->readBytes -= processListIterator.second.readBytes;
-            lastImage->writtenBytes -= processListIterator.second.writtenBytes;
+        for (auto const & processListIterator : initialProcesses) {
+            auto lastImage = processList.findProcess (processListIterator.first.PID);
+            if (lastImage != nullptr) {
+                // cout << "fixing " << lastImage->PID << " by " << iter.second.PID;
+                // cout << " : " << lastImage->systemTime
+                //	       << " - " <<iter.second.systemTime << endl;
+                lastImage->userTime -= processListIterator.second.userTime;
+                lastImage->systemTime -= processListIterator.second.systemTime;
+                lastImage->waitTime -= processListIterator.second.waitTime;
+                lastImage->sleepTime -= processListIterator.second.sleepTime;
+                lastImage->readBytes -= processListIterator.second.readBytes;
+                lastImage->writtenBytes -= processListIterator.second.writtenBytes;
+            }
+            //      else
+            //	cout << "not fixing " << iter->first.PID << endl;
         }
-        //      else
-        //	cout << "not fixing " << iter->first.PID << endl;
     }
+
+    return processList;
 }
 
 
 void
 Analyzer::addProcessToGroup (PerfData & rawData,
                              DataStore* const logFile,
-                             const WorkLoad theWorkLoad,
+                             const WorkLoad & theWorkLoad,
                              ProcessGroup & theProcessGroup,
-                             const ProcessData theProcess)
+                             const ProcessData & theProcess)
 {
-    if (logFile != 0) {
+    if (logFile != nullptr) {
         *logFile << theProcess.name
                  << " (" << theProcess.PID << "-"
                  << theProcess.PPID << ") ("
@@ -220,14 +214,13 @@ Analyzer::findProcessGroup (WorkLoad* & theWorkLoad,
                             const char name[], const char args[],
                             const char user[], const char group[])
 {
-    for (auto & workLoads : workLoads)
-        for (auto & processGroups : workLoads.processGroups)
-            for (auto & iRegExps : processGroups.includeProcs)
-                if (includeProcess (processGroups, name, args, user, group)) {
-                    theWorkLoad = &workLoads;
-                    theProcessGroup = &processGroups;
-                    return true;
-                }
+    for (auto & workLoad : workLoads)
+        for (auto & processGroup : workLoad.processGroups)
+            if (includeProcess (processGroup, name, args, user, group)) {
+                theWorkLoad = &workLoad;
+                theProcessGroup = &processGroup;
+                return true;
+            }
     return false;
 }
 
@@ -241,38 +234,27 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
 {
     auto sucpu = 0.0;
     auto sscpu = 0.0;
-
-    ProcessList processList;
-    ProcessData* process;
-
-    WorkLoad*            aWorkLoad;
-    ProcessGroup*        aProcessGroup;
-
-    std::vector<ProcessFamily> theProcessFamily;
-
-    processRawData (processList, rawData, fixTimes,
-                    startHour, startMinute, endHour, endMinute);
-
+    auto processList = processRawData (rawData, fixTimes, startHour, startMinute, endHour, endMinute);
     for (auto & iter : processList) {
         sucpu += iter.second.userTime;
         sscpu += iter.second.systemTime;
     }
-
     unaccountedUserCPU = userCPU + niceCPU - sucpu;
     unaccountedSystemCPU = systemCPU - sscpu;
 
     // Start assigning Process to WorkLoads
+
+    // First childeren of existing allocations
+    auto theProcessFamily = std::vector<ProcessFamily> {};
     for (auto & iter : processList) {
         ProcessFamily aProcessFamilyEntry (iter.second.PPID, 0, 0);
-        std::vector<ProcessFamily>::iterator aProcessFamily;
-        aProcessFamily = find (theProcessFamily.begin (), theProcessFamily.end (),
-                               aProcessFamilyEntry);
+        auto aProcessFamily = find (theProcessFamily.begin (), theProcessFamily.end (), aProcessFamilyEntry);
         if (aProcessFamily != theProcessFamily.end ()
             && !excludeProcess (*(aProcessFamily->processGroup),
                                 iter.second.name, iter.second.args,
                                 rawData.staticData.users[iter.second.uid].name,
                                 rawData.staticData.groups[iter.second.gid].name)) {
-            if (logFile != 0) {
+            if (logFile != nullptr) {
                 *logFile << iter.second.name
                          << " (" << iter.second.PID << ") is a child of "
                          << iter.second.PPID
@@ -280,25 +262,25 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
             }
             addProcessToGroup (rawData, logFile, *(aProcessFamily->workLoad),
                                *(aProcessFamily->processGroup), iter.second);
-            ProcessFamily newProcessFamilyEntry (iter.second.PID,
-                                                 aProcessFamily->workLoad,
-                                                 aProcessFamily->processGroup);
+            ProcessFamily newProcessFamilyEntry (iter.second.PID, aProcessFamily->workLoad, aProcessFamily->processGroup);
             theProcessFamily.push_back (newProcessFamilyEntry);
             continue;
         }
-        if (findProcessGroup (aWorkLoad, aProcessGroup,
-                              iter.second.name, iter.second.args,
-                              rawData.staticData.users[iter.second.uid].name,
+
+        // Second, new allocations
+        WorkLoad*            aWorkLoad;
+        ProcessGroup*        aProcessGroup;
+        if (findProcessGroup (aWorkLoad, aProcessGroup, iter.second.name, iter.second.args, rawData.staticData.users[iter.second.uid].name,
                               rawData.staticData.groups[iter.second.gid].name)) {
-            addProcessToGroup (rawData, logFile, *aWorkLoad, *aProcessGroup,
-                               iter.second);
+            addProcessToGroup (rawData, logFile, *aWorkLoad, *aProcessGroup, iter.second);
             if (aProcessGroup->withChildren) {
-                ProcessFamily newProcessFamilyEntry (iter.second.PID, aWorkLoad,
-                                                     aProcessGroup);
+                ProcessFamily newProcessFamilyEntry (iter.second.PID, aWorkLoad, aProcessGroup);
                 theProcessFamily.push_back (newProcessFamilyEntry);
             }
             continue;
         }
+
+        // Cannot allocatte
         cerr << "ERROR: UNABLE to catagorize "
              << iter.second.name << endl;
     }
@@ -370,7 +352,6 @@ Analyzer::analyze (const char name[], const bool fixTimes,
     PerfData rawData;
 
     rawData.open (name);
-    analyze (rawData, fixTimes, logFile,
-             startHour, startMinute, endHour, endMinute);
+    analyze (rawData, fixTimes, logFile, startHour, startMinute, endHour, endMinute);
     rawData.close ();
 }

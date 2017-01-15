@@ -60,50 +60,30 @@ void
 report (int argc, char*argv[])
 {
     int option;
-    char const* dataFile = "perf.dat";
-    char* startTime = 0;
-    char* endTime = 0;
-    int startHour = 0;
-    int startMinute = 0;
-    int endHour = 24;
-    int endMinute = 00;
-    bool csv = false;
-    bool summary = false;
+    auto dataFile = "perf.dat";
+    char* startTime = nullptr;
+    char* endTime = nullptr;
+    auto startHour = 0;
+    auto startMinute = 0;
+    auto endHour = 24;
+    auto endMinute = 0;
+    auto csv = false;
+    auto summary = false;
 
     PerfData perfData;
     double total_cpu;
-    int count = 0;
+    auto count = 0;
 
-    double nicecpu;
-    double usercpu;
-    double systemcpu;
-    double idlecpu;
-    double waitcpu;
-    double runqueue;
-    double bytesread;
-    double byteswritten;
-
-    double p_nicecpu;
-    double p_usercpu;
-    double p_systemcpu;
-    double p_idlecpu;
-    double p_waitcpu;
-    double p_runqueue;
-    double p_bytesread;
-    double p_byteswritten;
-
-    double c_nicecpu = 0;
-    double c_usercpu = 0;
-    double c_systemcpu = 0;
-    double c_idlecpu = 0;
-    double c_waitcpu = 0;
-    double c_runqueue = 0;
-    double c_bytesread = 0;
-    double c_byteswritten = 0;
+    auto c_nicecpu = 0.0;
+    auto c_usercpu = 0.0;
+    auto c_systemcpu = 0.0;
+    auto c_idlecpu = 0.0;
+    auto c_waitcpu = 0.0;
+    auto c_runqueue = 0.0;
+    auto c_bytesread = 0.0;
+    auto c_byteswritten = 0.0;
 
     char timeBuffer[64];
-    std::vector<StaticDiskData>::iterator iterIO;
-    std::vector<StaticNetworkInterfaceData>::iterator iterNet;
 
     argc--;
     argv++;
@@ -159,23 +139,19 @@ report (int argc, char*argv[])
             // << perfData.staticData.memory.virtualMemory << " bytes"
              << " (" << perfData.staticData.memory.pageSize << " bytes/page)"
              << endl;
-        for (iterIO = perfData.staticData.IO.diskData.begin ();
-             iterIO != perfData.staticData.IO.diskData.end ();
-             iterIO++) {
+        for (auto const & iterIO : perfData.staticData.IO.diskData) {
             cout << "Disk "
-                 << iterIO->name
+                 << iterIO.name
                  << " ("
-                 << iterIO->type
+                 << iterIO.type
                  << ")"
                  << endl;
         }
-        for (iterNet = perfData.staticData.network.interfaces.begin ();
-             iterNet != perfData.staticData.network.interfaces.end ();
-             iterNet++) {
+        for (auto const & iterNet : perfData.staticData.network.interfaces) {
             cout << "interface "
-                 << iterNet->name
+                 << iterNet.name
                  << " ("
-                 << iterNet->ip4
+                 << iterNet.ip4
                  << ")"
                  << endl;
         }
@@ -198,14 +174,14 @@ report (int argc, char*argv[])
 
     try {
         for (;; ) {
-            p_nicecpu = perfData.dynamicData.CPU.nice;
-            p_usercpu = perfData.dynamicData.CPU.user;
-            p_systemcpu = perfData.dynamicData.CPU.system;
-            p_idlecpu = perfData.dynamicData.CPU.idle;
-            p_waitcpu = perfData.dynamicData.CPU.wait;
-            p_runqueue = perfData.dynamicData.CPU.runQueue;
-            p_bytesread = perfData.dynamicData.IO.bytesRead;
-            p_byteswritten = perfData.dynamicData.IO.bytesWritten;
+            auto p_nicecpu = perfData.dynamicData.CPU.nice;
+            auto p_usercpu = perfData.dynamicData.CPU.user;
+            auto p_systemcpu = perfData.dynamicData.CPU.system;
+            auto p_idlecpu = perfData.dynamicData.CPU.idle;
+            auto p_waitcpu = perfData.dynamicData.CPU.wait;
+            auto p_runqueue = perfData.dynamicData.CPU.runQueue;
+            auto p_bytesread = perfData.dynamicData.IO.bytesRead;
+            auto p_byteswritten = perfData.dynamicData.IO.bytesWritten;
             perfData.get ();
 
             if (beforeTime (perfData.dynamicData.timeStamp, startHour, startMinute)) {
@@ -222,14 +198,14 @@ report (int argc, char*argv[])
                 break;
             }
 
-            nicecpu = perfData.dynamicData.CPU.nice - p_nicecpu;
-            usercpu = perfData.dynamicData.CPU.user - p_usercpu;
-            systemcpu = perfData.dynamicData.CPU.system - p_systemcpu;
-            idlecpu = perfData.dynamicData.CPU.idle - p_idlecpu;
-            waitcpu = perfData.dynamicData.CPU.wait - p_waitcpu;
-            runqueue = perfData.dynamicData.CPU.runQueue;
-            bytesread = perfData.dynamicData.IO.bytesRead - p_bytesread;
-            byteswritten = perfData.dynamicData.IO.bytesWritten - p_byteswritten;
+            auto nicecpu = perfData.dynamicData.CPU.nice - p_nicecpu;
+            auto usercpu = perfData.dynamicData.CPU.user - p_usercpu;
+            auto systemcpu = perfData.dynamicData.CPU.system - p_systemcpu;
+            auto idlecpu = perfData.dynamicData.CPU.idle - p_idlecpu;
+            auto waitcpu = perfData.dynamicData.CPU.wait - p_waitcpu;
+            auto runqueue = perfData.dynamicData.CPU.runQueue - p_runqueue;
+            auto bytesread = perfData.dynamicData.IO.bytesRead - p_bytesread;
+            auto byteswritten = perfData.dynamicData.IO.bytesWritten - p_byteswritten;
 
             total_cpu = nicecpu + usercpu + systemcpu + idlecpu + waitcpu;
             total_cpu /= 100.0;
@@ -299,7 +275,7 @@ report (int argc, char*argv[])
         c_systemcpu /= count;
         c_idlecpu /= count;
         c_waitcpu /= count;
-        c_runqueue /= runqueue;
+        c_runqueue /= count;
         total_cpu = c_nicecpu + c_usercpu + c_systemcpu + c_idlecpu + c_waitcpu;
         total_cpu /= 100.0;
 
@@ -312,7 +288,7 @@ report (int argc, char*argv[])
                  << c_systemcpu / total_cpu << ";"
                  << c_idlecpu / total_cpu << ";"
                  << c_waitcpu / total_cpu << ";"
-                 << runqueue << ";"
+                 << c_runqueue << ";"
                  << c_bytesread << ";"
                  << c_byteswritten << endl;
         } else {
@@ -328,7 +304,7 @@ report (int argc, char*argv[])
                  << "% WAIT: "
                  << c_waitcpu / total_cpu
                  << "% QLEN: "
-                 << runqueue
+                 << c_runqueue
                  << " RBytes: "
                  << c_bytesread
                  << " WBytes: "
@@ -342,17 +318,17 @@ void
 report_procs (int argc, char*argv[])
 {
     int option;
-    char const* dataFile = "perf.dat";
-    char* startTime = 0;
-    char* endTime = 0;
-    int startHour = 0;
-    int startMinute = 0;
-    int endHour = 24;
-    int endMinute = 00;
-    bool dateFormat = false;
-    bool deltaFormat = false;
+    auto dataFile = "perf.dat";
+    char* startTime = nullptr;
+    char* endTime = nullptr;
+    auto startHour = 0;
+    auto startMinute = 0;
+    auto endHour = 24;
+    auto endMinute = 0;
+    auto dateFormat = false;
+    auto deltaFormat = false;
 
-    int count = 0;
+    auto count = 0;
     PerfData perfData;
     ProcessList::iterator iter;
     time_t startTimeStamp = 0;
@@ -481,9 +457,6 @@ info (int argc, char*argv[])
     char const* dataFile = "perf.dat";
     PerfData perfData;
     int option;
-    std::vector<StaticDiskData>::iterator diskIter;
-    std::vector<StaticNetworkInterfaceData>::iterator interfaceIter;
-    DataStore* logFile = nullptr;
 
     argc--;
     argv++;
@@ -516,24 +489,20 @@ info (int argc, char*argv[])
          << " (" << perfData.staticData.memory.pageSize << " bytes/page)"
          << endl;
 
-    for (diskIter = perfData.staticData.IO.diskData.begin ();
-         diskIter != perfData.staticData.IO.diskData.end ();
-         diskIter++) {
+    for (auto const & diskIter : perfData.staticData.IO.diskData) {
         cout << "Disk "
-             << diskIter->name
+             << diskIter.name
              << " ("
-             << diskIter->type
+             << diskIter.type
              << ")"
              << endl;
     }
 
-    for (interfaceIter = perfData.staticData.network.interfaces.begin ();
-         interfaceIter != perfData.staticData.network.interfaces.end ();
-         interfaceIter++) {
+    for (auto const & interfaceIter : perfData.staticData.network.interfaces) {
         cout << "Interface "
-             << interfaceIter->name
+             << interfaceIter.name
              << " ("
-             << interfaceIter->ip4
+             << interfaceIter.ip4
              << ")"
              << endl;
     }
@@ -543,20 +512,20 @@ void
 analyze (int argc, char*argv[])
 {
     int option;
-    bool csv = false;
-    bool fixTimes = false;
-    char const* dataFile = "perf.dat";
-    char const* workLoadFile = "workloads.wkl";
-    char* logFileName = 0;
-    char* startTime = 0;
-    char* endTime = 0;
+    auto csv = false;
+    auto fixTimes = false;
+    auto dataFile = "perf.dat";
+    auto workLoadFile = "workloads.wkl";
+    char* logFileName = nullptr;
+    char* startTime = nullptr;
+    char* endTime = nullptr;
 
-    int startHour = 0;
-    int startMinute = 0;
-    int endHour = 24;
-    int endMinute = 00;
+    auto startHour = 0;
+    auto startMinute = 0;
+    auto endHour = 24;
+    auto endMinute = 0;
 
-    DataStore* logFile = 0;
+    DataStore* logFile = nullptr;
 
     Analyzer analyzeData;
 
@@ -590,11 +559,11 @@ analyze (int argc, char*argv[])
             break;
         }
     }
-    if (dataFile == 0) {
+    if (dataFile == nullptr) {
         cerr << "*** ERROR: invalid datafile (-d)." << endl;
         return;
     }
-    if (workLoadFile == 0) {
+    if (workLoadFile == nullptr) {
         cerr << "*** ERROR: invalid workloadfile (-w)." << endl;
         return;
     }
@@ -604,10 +573,10 @@ analyze (int argc, char*argv[])
     if (endTime != 0) {
         parseTime (endTime, endHour, endMinute);
     }
-    if (logFileName != 0) {
+    if (logFileName != nullptr) {
         logFile = new DataStore (logFileName, std::ios_base::out,
                                  RunQFileType::UnTyped);
-        if (logFile == 0) {
+        if (logFile == nullptr) {
             cerr << "*** ERROR: failed to open logfile '" << logFileName << "'"
                  << endl;
             return;
@@ -623,11 +592,11 @@ analyze (int argc, char*argv[])
 
     analyzeData.analyze (dataFile, fixTimes, logFile,
                          startHour, startMinute, endHour, endMinute);
-    if (logFile != 0)
+    if (logFile != nullptr)
         analyzeData.report (*logFile);
     ((Model*)&analyzeData)->simulate (cout, csv);
 
-    if (logFile != 0) {
+    if (logFile != nullptr) {
         logFile->close ();
         delete logFile;
     }

@@ -10,7 +10,7 @@ void
 usage (std::ostream & output)
 {
 #ifndef COLLECTOR_ONLY
-    output << "usage: runq collect -N -d datafile -m number_of_minutes -S spantime_in_seconds"
+    output << "usage: runq collect -N -d datafile -m number_of_minutes -S spantime_in_seconds" << endl
            << "usage: runq info -d datafile" << endl
            << "usage: runq report -C -d datafile -s startTime (HH:MM) -e endTime (HH:MM)" << endl
            << "usage: runq procs -D -T -d datafile -s startTime (HH:MM) -e endTime (HH:MM)" << endl

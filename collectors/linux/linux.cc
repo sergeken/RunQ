@@ -194,9 +194,9 @@ LinuxPerfData::getDynamicMemoryData () throw (RunQError)
     while (fgets (buffer, sizeof(buffer) - 1, memoryFile)) {
         if (memcmp (buffer, MEMFREEID, sizeof(MEMFREEID) - 1) == 0) {
             sscanf (buffer, "%*s %lf", &dynamicData.memory.free);
-        } else if (memcmp (buffer, MEMBUFFERID, sizeof(MEMBUFFERID) - 1) == 0)   {
+        } else if (memcmp (buffer, MEMBUFFERID, sizeof(MEMBUFFERID) - 1) == 0) {
             sscanf (buffer, "%*s %lf", &dynamicData.memory.buffers);
-        } else if (memcmp (buffer, MEMCACHEDID, sizeof(MEMCACHEDID) - 1) == 0)   {
+        } else if (memcmp (buffer, MEMCACHEDID, sizeof(MEMCACHEDID) - 1) == 0) {
             sscanf (buffer, "%*s %lf", &dynamicData.memory.cached);
         }
     }
@@ -290,7 +290,7 @@ LinuxPerfData::getProcessData (long PID) throw (RunQError)
             if (memcmp (buffer, "Uid:", 4) == 0) {
                 sscanf (buffer, "%*s %d",
                         &aProcess.uid);
-            } else if (memcmp (buffer, "Gid:", 4) == 0)   {
+            } else if (memcmp (buffer, "Gid:", 4) == 0) {
                 sscanf (buffer, "%*s %d",
                         &aProcess.gid);
                 break;
@@ -331,7 +331,7 @@ LinuxPerfData::getProcessList () throw (RunQError)
             PID = atol (directoryEntry->d_name);
             if (PID > 0)
                 getProcessData (PID);
-        } catch (RunQError & error)    {
+        } catch (RunQError & error) {
             switch (error.error) {
             case RunQError::FileNotFound:
                 break;
@@ -366,15 +366,15 @@ LinuxPerfData::getStaticCPUData () throw (RunQError)
     while (fgets (buffer, sizeof(buffer) - 1, CPUFile)) {
         if (memcmp (buffer, PROCESSORNUM, sizeof(PROCESSORNUM) - 1) == 0) {
             staticData.CPU.numberOfCPUs++;
-        } else if (memcmp (buffer, VENDORID, sizeof(VENDORID) - 1) == 0)   {
+        } else if (memcmp (buffer, VENDORID, sizeof(VENDORID) - 1) == 0) {
             sscanf (buffer, "%*s : %s", staticData.CPU.vendor);
-        } else if (memcmp (buffer, MODELNAME, sizeof(MODELNAME) - 1) == 0)   {
+        } else if (memcmp (buffer, MODELNAME, sizeof(MODELNAME) - 1) == 0) {
             sscanf (buffer, "%*s %*s : %[^\n]", staticData.CPU.model);
-        } else if (memcmp (buffer, FREQUENCY, sizeof(FREQUENCY) - 1) == 0)   {
+        } else if (memcmp (buffer, FREQUENCY, sizeof(FREQUENCY) - 1) == 0) {
             sscanf (buffer, "%*s %*s : %lf", &staticData.CPU.frequency);
-        } else if (memcmp (buffer, CACHESIZE, sizeof(CACHESIZE) - 1) == 0)   {
+        } else if (memcmp (buffer, CACHESIZE, sizeof(CACHESIZE) - 1) == 0) {
             sscanf (buffer, "%*s %*s : %d", &staticData.CPU.cacheSize);
-        } else if (memcmp (buffer, SPECINT, sizeof(SPECINT) - 1) == 0)   {
+        } else if (memcmp (buffer, SPECINT, sizeof(SPECINT) - 1) == 0) {
             sscanf (buffer, "%*s : %lf", &staticData.CPU.specint);
         }
     }
@@ -452,7 +452,7 @@ LinuxPerfData::getStaticIOData () throw (RunQError)
                     }
                     fclose (ideFile);
                 }
-            } else if (memcmp (aDisk.name, SCSIHDID, sizeof(SCSIHDID) - 1) == 0)    {
+            } else if (memcmp (aDisk.name, SCSIHDID, sizeof(SCSIHDID) - 1) == 0) {
 #if 0
                 FILE* scsiFile;
                 char buffer2[256];

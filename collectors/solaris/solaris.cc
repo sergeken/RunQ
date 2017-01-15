@@ -164,7 +164,7 @@ SolarisPerfData::getStaticIOData () throw (RunQError)
                                 sizeof (named_stat[i].value.c));
                         aDisk.type[len + sizeof(named_stat[i].value.c)] = '\0';
                     }
-                } else if (strcmp (named_stat[i].name, PRODUCT) == 0)    {
+                } else if (strcmp (named_stat[i].name, PRODUCT) == 0) {
                     if (strlen (named_stat[i].value.c) <= sizeof(named_stat[i].value.c))
                         strcat (aDisk.type, named_stat[i].value.c);
                     else {

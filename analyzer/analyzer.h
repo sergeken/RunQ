@@ -90,9 +90,8 @@ public:
              const int endHour = 24, const int endMinute = 0);
 
 private:
-    void
-    processRawData (ProcessList & processList, PerfData & rawData,
-                    const bool fixTimes,
+    ProcessList
+    processRawData (PerfData & rawData, const bool fixTimes,
                     const int startHour, const int startMinute,
                     const int endHour, const int endMinute)
     throw (RunQError);
@@ -117,9 +116,9 @@ private:
     void
     addProcessToGroup (PerfData & rawData,
                        DataStore* const logFile,
-                       const WorkLoad theWorkload,
+                       const WorkLoad & theWorkload,
                        ProcessGroup & theProcessGroup,
-                       const ProcessData theProcess);
+                       const ProcessData & theProcess);
 };
 
 #endif // RUNQ_ANALYZER_H

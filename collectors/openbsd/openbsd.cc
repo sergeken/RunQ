@@ -197,7 +197,7 @@ OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
             if (memcmp (buffer, "Uid:", 4) == 0) {
                 sscanf (buffer, "%*s %d",
                         &aProcess.uid);
-            } else if (memcmp (buffer, "Gid:", 4) == 0)     {
+            } else if (memcmp (buffer, "Gid:", 4) == 0) {
                 sscanf (buffer, "%*s %d",
                         &aProcess.gid);
                 break;
@@ -238,7 +238,7 @@ OpenBSDPerfData::getProcessList () throw (RunQError)
             PID = atol (directoryEntry->d_name);
             if (PID > 0)
                 getProcessData (PID);
-        } catch (RunQError & error)        {
+        } catch (RunQError & error) {
             switch (error.error) {
             case RunQError::FileNotFound:
                 break;

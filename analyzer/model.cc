@@ -45,25 +45,23 @@ inline static double
 fac (const double n)
 {
     auto result = 1.0;
-
     for (auto i = 1.0; i <= n; i++)
         result *= i;
-
     return result;
 }
+
 
 inline static double
 ErlangC (const int numOfCPUs, const double utilisation)
 {
     auto adjustedUtilization = utilisation * numOfCPUs;
     auto ratio = pow (adjustedUtilization, numOfCPUs) / fac (numOfCPUs);
-
     auto sums = 1.0;
     for (auto k = 1; k < numOfCPUs; k++)
         sums += pow (adjustedUtilization, k) / fac (k);
-
     return ratio / (ratio + (1.0 - utilisation) * sums);
 }
+
 
 double
 Model::responseTime (const int numOfCPUs, const double utilisation, const double serviceTime)
@@ -85,8 +83,8 @@ Model::simulate (std::ostream & output, const bool csvOutput)
     auto CPUTime = 0.0;
     auto serviceTime = 0.0;
 
-    for (auto const & workLoads : workLoads) {
-        for (auto const & processGroups : workLoads.processGroups) {
+    for (auto const & workLoad : workLoads) {
+        for (auto const & processGroups : workLoad.processGroups) {
             totalCPU += processGroups.userCPU + processGroups.systemCPU;
         }
     }
@@ -115,42 +113,42 @@ Model::simulate (std::ostream & output, const bool csvOutput)
         output << "WorkLoad;ProcessGroup;CPUSeconds;UserSeconds;SystemSeconds;BytesRead;BytesWritten;CPULoad;ServiceTime;ResponseTime" << endl;
     }
 
-    for (auto const & workLoads : workLoads) {
+    for (auto const & workLoad : workLoads) {
         double wklCPU = 0;
         auto wklProcessCount = 0;
         if (!csvOutput)
-            output << "Workload : " << workLoads.name << endl;
-        for (auto const & processGroups : workLoads.processGroups) {
-            CPUTime = processGroups.userCPU + processGroups.systemCPU;
+            output << "Workload : " << workLoad.name << endl;
+        for (auto const & processGroup : workLoad.processGroups) {
+            CPUTime = processGroup.userCPU + processGroup.systemCPU;
             wklCPU += CPUTime;
-            wklProcessCount += processGroups.activeProcessCount;
-            if (processGroups.activeProcessCount > 1)
+            wklProcessCount += processGroup.activeProcessCount;
+            if (processGroup.activeProcessCount > 1)
                 serviceTime = CPUTime
-                              / ((double) processGroups.activeProcessCount * elapsedSeconds);
+                              / ((double) processGroup.activeProcessCount * elapsedSeconds);
             else
                 serviceTime = CPUTime / (double)elapsedSeconds;
             if (!csvOutput) {
-                output << "  Process Group: " << processGroups.name << endl;
+                output << "  Process Group: " << processGroup.name << endl;
                 output << "    CPU usage : "
                        << 100.0 * CPUTime / elapsedCPU
                        << "% ("
                        << CPUTime
                        << " seconds ("
-                       << processGroups.userCPU << " user + "
-                       << processGroups.systemCPU << " system))" << endl;
-                output << "    Bytes read : " << processGroups.readBytes
-                       << " bytes written: " << processGroups.writtenBytes << endl;
+                       << processGroup.userCPU << " user + "
+                       << processGroup.systemCPU << " system))" << endl;
+                output << "    Bytes read : " << processGroup.readBytes
+                       << " bytes written: " << processGroup.writtenBytes << endl;
                 output << "    CPU service time : " << serviceTime
                        << "    Response time : " << responseTime (numberOfCPUs, CPULoad, serviceTime)
                        << endl;
             } else {
-                output << workLoads.name << ";"
-                       << processGroups.name << ";"
+                output << workLoad.name << ";"
+                       << processGroup.name << ";"
                        << CPUTime << ";"
-                       << processGroups.userCPU << ";"
-                       << processGroups.systemCPU << ";"
-                       << processGroups.readBytes << ";"
-                       << processGroups.writtenBytes << ";"
+                       << processGroup.userCPU << ";"
+                       << processGroup.systemCPU << ";"
+                       << processGroup.readBytes << ";"
+                       << processGroup.writtenBytes << ";"
                        << 100.0 * CPUTime / elapsedCPU << ";"
                        << serviceTime << ";"
                        << responseTime (numberOfCPUs, CPULoad, serviceTime)

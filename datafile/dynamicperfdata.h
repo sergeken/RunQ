@@ -7,7 +7,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 04 jan 2000
  * VERSION : 1.00 (18-mar-2000)
  *
@@ -21,12 +21,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -46,53 +46,55 @@ This program is distributed in the hope that it will be useful,
 #include "dynamicmemorydata.h"
 #include "processdata.h"
 
-class DynamicPerfData
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
+class DynamicPerfData {
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
 
- public:
-  time_t timeStamp;
-  DynamicCPUData CPU;
-  DynamicIOData IO;
-  DynamicMemoryData memory;
-  ProcessList processList;
+public:
+    time_t timeStamp;
+    DynamicCPUData CPU;
+    DynamicIOData IO;
+    DynamicMemoryData memory;
+    ProcessList processList;
 };
 
 
-inline void DynamicPerfData::get(DataStore& dataStore) throw(RunQError)
+inline void
+DynamicPerfData::get (DataStore & dataStore) throw (RunQError)
 {
-  dataStore.get(&timeStamp, sizeof(timeStamp));
-  CPU.get(dataStore);
-  IO.get(dataStore);
-  memory.get(dataStore);
+    dataStore.get (&timeStamp, sizeof(timeStamp));
+    CPU.get (dataStore);
+    IO.get (dataStore);
+    memory.get (dataStore);
 
-  ProcessData process;
-  size_t size;
+    ProcessData process;
+    size_t size;
 
-  processList.clear();
-  dataStore.get(&size, sizeof(size));
-  for (; size>0; size--)
-    {
-      process.get(dataStore);
-      processList[process.PID] = process;
+    processList.clear ();
+    dataStore.get (&size, sizeof(size));
+    for (; size > 0; size--) {
+        process.get (dataStore);
+        processList[process.PID] = process;
     }
 }
 
-inline void DynamicPerfData::put(DataStore& dataStore) throw(RunQError)
+inline void
+DynamicPerfData::put (DataStore & dataStore) throw (RunQError)
 {
-  dataStore.put(&timeStamp, sizeof(timeStamp));
-  CPU.put(dataStore);
-  IO.put(dataStore);
-  memory.put(dataStore);
+    dataStore.put (&timeStamp, sizeof(timeStamp));
+    CPU.put (dataStore);
+    IO.put (dataStore);
+    memory.put (dataStore);
 
-  size_t size = processList.size();
-  dataStore.put(&size, sizeof(size));
+    size_t size = processList.size ();
+    dataStore.put (&size, sizeof(size));
 
-  for (auto & processIterator : processList)
-      processIterator.second.put(dataStore);
-  processList.clear();
+    for (auto & processIterator : processList)
+        processIterator.second.put (dataStore);
+    processList.clear ();
 }
 
 #endif // RUNQ_DYNAMICPERFDATA_H

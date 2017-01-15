@@ -7,7 +7,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 24 mey 2000
  * VERSION : 1.00 (24-may-2000)
  *
@@ -20,12 +20,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -44,54 +44,59 @@ This program is distributed in the hope that it will be useful,
 #define RUNQ_DISKNAME_MAX 64
 #define RUNQ_DISKTYPE_MAX 256
 
-class StaticDiskData
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
- public:
-  char name[RUNQ_DISKNAME_MAX];
-  char type[RUNQ_DISKTYPE_MAX];
+class StaticDiskData {
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
+public:
+    char name[RUNQ_DISKNAME_MAX];
+    char type[RUNQ_DISKTYPE_MAX];
 };
 
-class StaticIOData
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
+class StaticIOData {
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
 
- public:
-  std::vector<StaticDiskData> diskData;
+public:
+    std::vector<StaticDiskData> diskData;
 };
 
-inline void StaticDiskData::put(DataStore& dataStore) throw(RunQError)
+inline void
+StaticDiskData::put (DataStore & dataStore) throw (RunQError)
 {
-  dataStore.put(this, sizeof(*this));
+    dataStore.put (this, sizeof(*this));
 }
 
-inline void StaticDiskData::get(DataStore& dataStore) throw(RunQError)
+inline void
+StaticDiskData::get (DataStore & dataStore) throw (RunQError)
 {
-  dataStore.get(this, sizeof(*this));
+    dataStore.get (this, sizeof(*this));
 }
 
-inline void StaticIOData::put(DataStore & dataStore) throw(RunQError)
+inline void
+StaticIOData::put (DataStore & dataStore) throw (RunQError)
 {
-  size_t size = diskData.size();
-  dataStore.put(&size, sizeof(size));
-  for (auto & diskDataIterator : diskData)
-      diskDataIterator.put(dataStore);
+    size_t size = diskData.size ();
+    dataStore.put (&size, sizeof(size));
+    for (auto & diskDataIterator : diskData)
+        diskDataIterator.put (dataStore);
 }
 
-inline void StaticIOData::get(DataStore & dataStore) throw(RunQError)
+inline void
+StaticIOData::get (DataStore & dataStore) throw (RunQError)
 {
-  size_t size;
-  StaticDiskData disk;
+    size_t size;
+    StaticDiskData disk;
 
-  dataStore.get(&size, sizeof(size));
-  for (; size>0; size--)
-    {
-      disk.get(dataStore);
-      diskData.push_back(disk);
+    dataStore.get (&size, sizeof(size));
+    for (; size > 0; size--) {
+        disk.get (dataStore);
+        diskData.push_back (disk);
     }
 }
 

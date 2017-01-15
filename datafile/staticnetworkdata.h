@@ -7,7 +7,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2005 Serge Robyns
- * 
+ *
  * CREATED : 09 februari 2005
  * VERSION : 1.00 (09-feb-2005)
  *
@@ -20,12 +20,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -44,54 +44,59 @@ This program is distributed in the hope that it will be useful,
 #define RUNQ_NETNAME_MAX 8
 #define RUNQ_IP4_MAX 16
 
-class StaticNetworkInterfaceData
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
- public:
-  char name[RUNQ_NETNAME_MAX];
-  char ip4[RUNQ_IP4_MAX];
+class StaticNetworkInterfaceData {
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
+public:
+    char name[RUNQ_NETNAME_MAX];
+    char ip4[RUNQ_IP4_MAX];
 };
 
-class StaticNetworkData
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
+class StaticNetworkData {
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
 
- public:
-  std::vector<StaticNetworkInterfaceData> interfaces;
+public:
+    std::vector<StaticNetworkInterfaceData> interfaces;
 };
 
-inline void StaticNetworkInterfaceData::put(DataStore& dataStore) throw(RunQError)
+inline void
+StaticNetworkInterfaceData::put (DataStore & dataStore) throw (RunQError)
 {
-  dataStore.put(this, sizeof(*this));
+    dataStore.put (this, sizeof(*this));
 }
 
-inline void StaticNetworkInterfaceData::get(DataStore& dataStore) throw(RunQError)
+inline void
+StaticNetworkInterfaceData::get (DataStore & dataStore) throw (RunQError)
 {
-  dataStore.get(this, sizeof(*this));
+    dataStore.get (this, sizeof(*this));
 }
 
-inline void StaticNetworkData::put(DataStore & dataStore) throw(RunQError)
+inline void
+StaticNetworkData::put (DataStore & dataStore) throw (RunQError)
 {
-  size_t size = interfaces.size();
-  dataStore.put(&size, sizeof(size));
-  for (auto & interfaceIterator : interfaces)
-      interfaceIterator.put(dataStore);
+    size_t size = interfaces.size ();
+    dataStore.put (&size, sizeof(size));
+    for (auto & interfaceIterator : interfaces)
+        interfaceIterator.put (dataStore);
 }
 
-inline void StaticNetworkData::get(DataStore & dataStore) throw(RunQError)
+inline void
+StaticNetworkData::get (DataStore & dataStore) throw (RunQError)
 {
-  size_t size;
-  StaticNetworkInterfaceData interface;
+    size_t size;
+    StaticNetworkInterfaceData interface;
 
-  dataStore.get(&size, sizeof(size));
-  for (; size>0; size--)
-    {
-      interface.get(dataStore);
-      interfaces.push_back(interface);
+    dataStore.get (&size, sizeof(size));
+    for (; size > 0; size--) {
+        interface.get (dataStore);
+        interfaces.push_back (interface);
     }
 }
 

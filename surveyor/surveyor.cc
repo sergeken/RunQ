@@ -96,7 +96,7 @@ Surveyor::watchProcesses (void) throw (RunQError)
 
     sample (false);
 
-    for (;;) { // Ever
+    for (;; ) { // Ever
         sleep (60);
         if (verbose)
             syslog (LOG_DEBUG, "Mark");
@@ -218,7 +218,7 @@ main (int argc, char** argv)
         closelog ();
         return EXIT_SUCCESS;
 
-    } catch (RunQError & error)      {
+    } catch (RunQError & error) {
         switch (error.error) {
         case RunQError::LicenseError:
             cerr << endl

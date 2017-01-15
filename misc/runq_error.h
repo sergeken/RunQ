@@ -7,7 +7,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 03 jan 2000
  * VERSION : 1.00 (18-mar-2000)
  *
@@ -20,12 +20,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -36,32 +36,32 @@ This program is distributed in the hope that it will be useful,
  *
  */
 
-class RunQError
-{
+class RunQError {
 public:
-  enum ErrorCode
-  {
-    NoError = 0,
-    GenericError,
-    InternalError,
-    NotSupported,
-    InvalidFile,
-    InvalidVersion,
-    FileNotFound,
-    NoProcDirectory,
-    FileError,
-    OptionError
-  };
-  enum ErrorCode error;
-  char const * info;
-
-  RunQError(enum ErrorCode errorCode )
-    { error = errorCode;
-      info = 0;
+    enum ErrorCode {
+        NoError = 0,
+        GenericError,
+        InternalError,
+        NotSupported,
+        InvalidFile,
+        InvalidVersion,
+        FileNotFound,
+        NoProcDirectory,
+        FileError,
+        OptionError
     };
-  RunQError(enum ErrorCode errorCode, const char text[] ) 
-    { error = errorCode;
-      info = text;
+    enum ErrorCode error;
+    char const* info;
+
+    RunQError(enum ErrorCode errorCode)
+    {
+        error = errorCode;
+        info = 0;
+    };
+    RunQError(enum ErrorCode errorCode, const char text[])
+    {
+        error = errorCode;
+        info = text;
     };
 };
 

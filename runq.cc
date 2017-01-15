@@ -397,11 +397,11 @@ report_procs (int argc, char*argv[])
 
     if (dateFormat)
         cout <<
-        "Date;Time;PID;PPID;Name;Args;User;Group;utime;stime;wtime;sleeptime;cutime;cstime;cwtime;csleeptime;MinFLT;MajFlt;cMinFlt;CMajFlt;inbytes;oubytes;RSS"
+            "Date;Time;PID;PPID;Name;Args;User;Group;utime;stime;wtime;sleeptime;cutime;cstime;cwtime;csleeptime;MinFLT;MajFlt;cMinFlt;CMajFlt;inbytes;oubytes;RSS"
              << endl;
     else
         cout <<
-        "RECORD;TimeStamp;PID;PPID;Name;Args;User;Group;utime;stime;wtime;sleeptime;cutime;cstime;cwtime;csleeptime;MinFLT;MajFlt;cMinFlt;CMajFlt;inbytes;oubytes;RSS"
+            "RECORD;TimeStamp;PID;PPID;Name;Args;User;Group;utime;stime;wtime;sleeptime;cutime;cstime;cwtime;csleeptime;MinFLT;MajFlt;cMinFlt;CMajFlt;inbytes;oubytes;RSS"
              << endl;
 
     try {

@@ -7,12 +7,12 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 19 aug 2000
  * VERSION : 1.00 ()
  *
  * DESCRIPTION:
- *   
+ *
  *
  * CHANGELOG:
  *
@@ -20,12 +20,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -57,52 +57,68 @@ using namespace std;
 #endif // SOLARIS
 #endif // LINUX
 
-class Message
-{
- public:
-  enum MessageType { UKNOWN=0, TEXT, DATE, TIME };
-  MessageType type;
-  char *      text;
+class Message {
+public:
+    enum MessageType { UKNOWN=0, TEXT, DATE, TIME };
+    MessageType type;
+    char*      text;
 };
 
-class WatchValues
-{
- public:
-  WatchValues()
-    {name=RegExp(""); args=RegExp("");
-     CPUUsage = 0.0;};
-  WatchValues(char aName[])
-    {name = RegExp(aName); args=RegExp("");
-     CPUUsage = 0.0;};
-  WatchValues(char aName[],
-	      double aValue, vector<Message> aMessage)
-    {name = RegExp(aName); args=RegExp("");
-     CPUUsage = aValue; message = aMessage;};
-  WatchValues(char aName[], char arg[])
-    {name = RegExp(aName); args = RegExp(arg);
-     CPUUsage = 0.0;};
-  WatchValues(char aName[], char arg[], double aValue,
-	      vector<Message> aMessage)
-    {name = RegExp(aName); args = RegExp(arg);
-     CPUUsage = aValue; message = aMessage;};
-  
- public:
-  RegExp	name;
-  RegExp	args;
-  double        CPUUsage;
-  vector<Message> message;
+class WatchValues {
+public:
+    WatchValues()
+    {
+        name = RegExp ("");
+        args = RegExp ("");
+        CPUUsage = 0.0;
+    };
+    WatchValues(char aName[])
+    {
+        name = RegExp (aName);
+        args = RegExp ("");
+        CPUUsage = 0.0;
+    };
+    WatchValues(char aName[],
+                double aValue, vector<Message> aMessage)
+    {
+        name = RegExp (aName);
+        args = RegExp ("");
+        CPUUsage = aValue;
+        message = aMessage;
+    };
+    WatchValues(char aName[], char arg[])
+    {
+        name = RegExp (aName);
+        args = RegExp (arg);
+        CPUUsage = 0.0;
+    };
+    WatchValues(char aName[], char arg[], double aValue,
+                vector<Message> aMessage)
+    {
+        name = RegExp (aName);
+        args = RegExp (arg);
+        CPUUsage = aValue;
+        message = aMessage;
+    };
+
+public:
+    RegExp name;
+    RegExp args;
+    double CPUUsage;
+    vector<Message> message;
 };
 
 
-class Surveyor : public PERFDATA
-{
- public: 
-  void watchProcesses(void) throw(RunQError);
- private:
-  WatchValues * watchProcess(const char name[], const char args[]);
- public:
-  vector<WatchValues> watchValues;
- private:
+class Surveyor : public PERFDATA {
+public:
+    void
+    watchProcesses (void) throw (RunQError);
+private:
+    WatchValues*
+    watchProcess (const char name[], const char args[]);
+public:
+    vector<WatchValues> watchValues;
+private:
 };
 
 #endif // RUNQ_SUVEYOR_H

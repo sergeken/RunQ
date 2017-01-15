@@ -7,7 +7,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 17 march 2001
  * VERSION : 1.00 (17-mar-2001)
  *
@@ -20,12 +20,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -43,61 +43,65 @@ This program is distributed in the hope that it will be useful,
 
 #define RUNQ_GROUPNAME_MAX 32
 
-struct groupLessThan
-{
-  inline bool operator()(const int first, const int second) const
-  {
-    return first < second;
-  }
-};
-
-class StaticGroupData
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
- public:
-  int  gid;
-  char name[RUNQ_GROUPNAME_MAX];
-};
-
-class StaticGroupList : public std::map<int, StaticGroupData, groupLessThan>
-{
- public:
-  void put(DataStore &dataStore) throw(RunQError);
-  void get(DataStore &dataStore) throw(RunQError);
-};
-
-inline void StaticGroupData::put(DataStore& dataStore) throw(RunQError)
-{
-  dataStore.put(this, sizeof(*this));
-}
-
-inline void StaticGroupData::get(DataStore& dataStore) throw(RunQError)
-{
-  dataStore.get(this, sizeof(*this));
-}
-
-inline void StaticGroupList::put(DataStore & dataStore) throw(RunQError)
-{
-  size_t size = this->size();
-  dataStore.put(&size, sizeof(size));
-  for (auto & groupListIterator : *this)
+struct groupLessThan {
+    inline bool
+    operator() (const int first, const int second) const
     {
-      groupListIterator.second.put(dataStore);
+        return first < second;
+    }
+};
+
+class StaticGroupData {
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
+public:
+    int gid;
+    char name[RUNQ_GROUPNAME_MAX];
+};
+
+class StaticGroupList : public std::map<int, StaticGroupData, groupLessThan>{
+public:
+    void
+    put (DataStore & dataStore) throw (RunQError);
+    void
+    get (DataStore & dataStore) throw (RunQError);
+};
+
+inline void
+StaticGroupData::put (DataStore & dataStore) throw (RunQError)
+{
+    dataStore.put (this, sizeof(*this));
+}
+
+inline void
+StaticGroupData::get (DataStore & dataStore) throw (RunQError)
+{
+    dataStore.get (this, sizeof(*this));
+}
+
+inline void
+StaticGroupList::put (DataStore & dataStore) throw (RunQError)
+{
+    size_t size = this->size ();
+    dataStore.put (&size, sizeof(size));
+    for (auto & groupListIterator : *this) {
+        groupListIterator.second.put (dataStore);
     }
 }
 
-inline void StaticGroupList::get(DataStore & dataStore) throw(RunQError)
+inline void
+StaticGroupList::get (DataStore & dataStore) throw (RunQError)
 {
-  size_t size;
-  StaticGroupData aGroup;
+    size_t size;
+    StaticGroupData aGroup;
 
-  dataStore.get(&size, sizeof(size));
-  for (; size>0; size--)
-    {
-      aGroup.get(dataStore);
-      (*this)[aGroup.gid] = aGroup;
+    dataStore.get (&size, sizeof(size));
+    for (; size > 0; size--) {
+        aGroup.get (dataStore);
+        (*this)[aGroup.gid] = aGroup;
     }
 }
 

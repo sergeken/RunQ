@@ -7,7 +7,7 @@
  *
  * AUTHOR : Serge Robyns mailto:serge.robyns@rc-s.be
  * COPYRIGHT : (C) 2000 Serge Robyns
- * 
+ *
  * CREATED : 05 jan 2000
  * VERSION : 1.00 (18-mar-2000)
  *
@@ -22,12 +22,12 @@
 
 /*  GNU General Public License
  *
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+   This program is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
@@ -47,71 +47,79 @@ This program is distributed in the hope that it will be useful,
 #include "workload.h"
 
 
-class ProcessFamily
-{
- public:
-  ProcessFamily(const long aPPID, WorkLoad * aWorkLoad,
-		ProcessGroup * aProcessGroup)
-    { PPID = aPPID; workLoad = aWorkLoad; processGroup = aProcessGroup; };
-  bool operator==(const ProcessFamily &right) const;
-  bool operator!=(const ProcessFamily &right) const;
- public:
-  long PPID;
-  WorkLoad * workLoad;
-  ProcessGroup * processGroup;
+class ProcessFamily {
+public:
+    ProcessFamily(const long aPPID, WorkLoad* aWorkLoad,
+                  ProcessGroup* aProcessGroup)
+    {PPID = aPPID; workLoad = aWorkLoad; processGroup = aProcessGroup;};
+    bool
+    operator== (const ProcessFamily & right) const;
+    bool
+    operator!= (const ProcessFamily & right) const;
+public:
+    long PPID;
+    WorkLoad* workLoad;
+    ProcessGroup* processGroup;
 };
 
-inline bool ProcessFamily::operator==(const ProcessFamily &right) const
+inline bool
+ProcessFamily::operator== (const ProcessFamily & right) const
 {
-  return PPID == right.PPID;
+    return PPID == right.PPID;
 }
 
-inline bool ProcessFamily::operator!=(const ProcessFamily &right) const
+inline bool
+ProcessFamily::operator!= (const ProcessFamily & right) const
 {
-  return PPID != right.PPID;
+    return PPID != right.PPID;
 }
 
-class Analyzer
-{
- public: 
-  void report(std::ostream & Output = std::cout);
-  void analyze(PerfData & rawData, const bool fixTimes,
-	       DataStore * logFile = 0,
-	       const int startHour = 0, const int startMinute = 0,
-	       const int endHour = 24, const int endMinute = 0);
-  void analyze(const char name[], const bool fixTimes,
-	       DataStore * logFile = 0,
-	       const int startHour = 0, const int startMinute = 0,
-	       const int endHour = 24, const int endMinute = 0);
-  
- private:
-  void processRawData(ProcessList & processList, PerfData & rawData,
-		      const bool fixTimes,
-		      const int startHour, const int startMinute,
-		      const int endHour, const int endMinute)
-    throw(RunQError);
-  bool findProcessGroup(WorkLoad *& theWorkLoad,
-		        ProcessGroup *& theProcessGroup,
-		        const char name[], const char args[],
-		        const char user[], const char group[]);
-  
- public:
-  double userCPU = 0.0;
-  double systemCPU = 0.0;
-  double niceCPU = 0.0;
-  double waitCPU = 0.0;
-  double idleCPU = 0.0;
-  double runQueue = 0.0;
-  int numberOfCPUs = 0;
-  double unaccountedUserCPU = 0.0;
-  double unaccountedSystemCPU = 0.0;
-  std::vector<WorkLoad> workLoads;
- private:
-  void addProcessToGroup(PerfData & rawData,
-			 DataStore * const logFile,
-			 const WorkLoad theWorkload,
-			 ProcessGroup & theProcessGroup,
-			 const ProcessData theProcess);
+class Analyzer {
+public:
+    void
+    report (std::ostream & Output = std::cout);
+    void
+    analyze (PerfData & rawData, const bool fixTimes,
+             DataStore* logFile = 0,
+             const int startHour = 0, const int startMinute = 0,
+             const int endHour = 24, const int endMinute = 0);
+    void
+    analyze (const char name[], const bool fixTimes,
+             DataStore* logFile = 0,
+             const int startHour = 0, const int startMinute = 0,
+             const int endHour = 24, const int endMinute = 0);
+
+private:
+    void
+    processRawData (ProcessList & processList, PerfData & rawData,
+                    const bool fixTimes,
+                    const int startHour, const int startMinute,
+                    const int endHour, const int endMinute)
+    throw (RunQError);
+    bool
+    findProcessGroup (WorkLoad* & theWorkLoad,
+                      ProcessGroup* & theProcessGroup,
+                      const char name[], const char args[],
+                      const char user[], const char group[]);
+
+public:
+    double userCPU = 0.0;
+    double systemCPU = 0.0;
+    double niceCPU = 0.0;
+    double waitCPU = 0.0;
+    double idleCPU = 0.0;
+    double runQueue = 0.0;
+    int numberOfCPUs = 0;
+    double unaccountedUserCPU = 0.0;
+    double unaccountedSystemCPU = 0.0;
+    std::vector<WorkLoad> workLoads;
+private:
+    void
+    addProcessToGroup (PerfData & rawData,
+                       DataStore* const logFile,
+                       const WorkLoad theWorkload,
+                       ProcessGroup & theProcessGroup,
+                       const ProcessData theProcess);
 };
 
 #endif // RUNQ_ANALYZER_H

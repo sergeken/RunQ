@@ -154,7 +154,7 @@ throw (RunQError)
 
         for (auto const & processListIterator : initialProcesses) {
             auto lastImage = processList.findProcess (processListIterator.first.PID);
-            if (lastImage != nullptr) {
+            if (lastImage) {
                 // cout << "fixing " << lastImage->PID << " by " << iter.second.PID;
                 // cout << " : " << lastImage->systemTime
                 //	       << " - " <<iter.second.systemTime << endl;
@@ -181,7 +181,7 @@ Analyzer::addProcessToGroup (PerfData & rawData,
                              ProcessGroup & theProcessGroup,
                              const ProcessData & theProcess)
 {
-    if (logFile != nullptr) {
+    if (logFile) {
         *logFile << theProcess.name
                  << " (" << theProcess.PID << "-"
                  << theProcess.PPID << ") ("
@@ -208,15 +208,15 @@ Analyzer::addProcessToGroup (PerfData & rawData,
 }
 
 
-inline std::tuple <bool, WorkLoad*, ProcessGroup*>
+inline std::pair <WorkLoad*, ProcessGroup*>
 Analyzer::findProcessGroup (const char name[], const char args[],
                             const char user[], const char group[])
 {
     for (auto & workLoad : workLoads)
         for (auto & processGroup : workLoad.processGroups)
             if (includeProcess (processGroup, name, args, user, group))
-                return {true, &workLoad, &processGroup};
-    return {false, nullptr, nullptr};
+                return {&workLoad, &processGroup};
+    return {nullptr, nullptr};
 }
 
 
@@ -248,7 +248,7 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
                                 iter.second.name, iter.second.args,
                                 rawData.staticData.users[iter.second.uid].name,
                                 rawData.staticData.groups[iter.second.gid].name)) {
-            if (logFile != nullptr) {
+            if (logFile) {
                 *logFile << iter.second.name
                          << " (" << iter.second.PID << ") is a child of "
                          << iter.second.PPID
@@ -262,13 +262,12 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
         }
 
         // Second, new allocations
-        bool found;
         WorkLoad* aWorkLoad;
         ProcessGroup* aProcessGroup;
-        std::tie (found, aWorkLoad, aProcessGroup) = findProcessGroup (iter.second.name, iter.second.args,
+        std::tie (aWorkLoad, aProcessGroup) = findProcessGroup (iter.second.name, iter.second.args,
                                                                        rawData.staticData.users[iter.second.uid].name,
                                                                        rawData.staticData.groups[iter.second.gid].name);
-        if (found) {
+        if (aWorkLoad && aProcessGroup) {
             addProcessToGroup (rawData, logFile, *aWorkLoad, *aProcessGroup, iter.second);
             if (aProcessGroup->withChildren) {
                 ProcessFamily newProcessFamilyEntry (iter.second.PID, aWorkLoad, aProcessGroup);

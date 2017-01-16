@@ -61,8 +61,8 @@ report (int argc, char*argv[])
 {
     int option;
     auto dataFile = "perf.dat";
-    char* startTime = nullptr;
-    char* endTime = nullptr;
+    char* startTime {};
+    char* endTime = {};
     auto startHour = 0;
     auto startMinute = 0;
     auto endHour = 24;
@@ -319,8 +319,8 @@ report_procs (int argc, char*argv[])
 {
     int option;
     auto dataFile = "perf.dat";
-    char* startTime = nullptr;
-    char* endTime = nullptr;
+    char* startTime = {};
+    char* endTime = {};
     auto startHour = 0;
     auto startMinute = 0;
     auto endHour = 24;
@@ -516,16 +516,16 @@ analyze (int argc, char*argv[])
     auto fixTimes = false;
     auto dataFile = "perf.dat";
     auto workLoadFile = "workloads.wkl";
-    char* logFileName = nullptr;
-    char* startTime = nullptr;
-    char* endTime = nullptr;
+    char* logFileName = {};
+    char* startTime = {};
+    char* endTime = {};
 
     auto startHour = 0;
     auto startMinute = 0;
     auto endHour = 24;
     auto endMinute = 0;
 
-    DataStore* logFile = nullptr;
+    DataStore* logFile = {};
 
     Analyzer analyzeData;
 
@@ -573,7 +573,7 @@ analyze (int argc, char*argv[])
     if (endTime != 0) {
         parseTime (endTime, endHour, endMinute);
     }
-    if (logFileName != nullptr) {
+    if (logFileName) {
         logFile = new DataStore (logFileName, std::ios_base::out,
                                  RunQFileType::UnTyped);
         if (logFile == nullptr) {
@@ -592,11 +592,11 @@ analyze (int argc, char*argv[])
 
     analyzeData.analyze (dataFile, fixTimes, logFile,
                          startHour, startMinute, endHour, endMinute);
-    if (logFile != nullptr)
+    if (logFile)
         analyzeData.report (*logFile);
     ((Model*)&analyzeData)->simulate (cout, csv);
 
-    if (logFile != nullptr) {
+    if (logFile) {
         logFile->close ();
         delete logFile;
     }

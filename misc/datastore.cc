@@ -34,7 +34,6 @@
  *
  */
 
-#include <string.h>
 #include "datastore.h"
 
 DataStore::DataStore(const char name[], const std::_Ios_Openmode mode, const RunQFileType aFileType)

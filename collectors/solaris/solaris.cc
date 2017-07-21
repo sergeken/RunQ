@@ -41,7 +41,7 @@ SolarisPerfData::SolarisPerfData() throw (RunQError)
     if (!kc)
         throw (RunQError::GenericError, "kstat_open");
     procDirectory = opendir (SOLARIS_PROCDIR);
-    if (procDirectory == NULL)
+    if (procDirectory == nullptr)
         throw (RunQError::NoProcDirectory, SOLARIS_PROCDIR);
 
     getStaticCPUData ();

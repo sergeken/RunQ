@@ -80,7 +80,7 @@ throw (RunQError)
 
     perfData->create (dataFile);
     perfData->sample (true);
-    perfData->dynamicData.timeStamp = time (NULL);
+    perfData->dynamicData.timeStamp = time (nullptr);
     perfData->put ();
 
     int i, j;
@@ -95,7 +95,7 @@ throw (RunQError)
             currentTime = time (0);
         }
         perfData->sample (true);
-        perfData->dynamicData.timeStamp = time (NULL);
+        perfData->dynamicData.timeStamp = time (nullptr);
         perfData->put ();
     }
 

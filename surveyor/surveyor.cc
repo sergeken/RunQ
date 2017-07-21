@@ -35,7 +35,7 @@
 
 using namespace std;
 
-#include <ctype.h>
+#include <cctype>
 #include <syslog.h>
 
 #include "surveyor.h"
@@ -47,12 +47,12 @@ WatchValues*
 Surveyor::watchProcess (const char name[], const char args[])
 {
     for (auto & regExps : watchValues)
-        if (regexec (&regExps.name.preg, name, 0, 0, 0) == 0
-            && (strlen (regExps.args.expression) == 0 || regexec (&regExps.args.preg, args, 0, 0, 0) == 0)
+        if (regexec (&regExps.name.preg, name, 0, nullptr, 0) == 0
+            && (strlen (regExps.args.expression) == 0 || regexec (&regExps.args.preg, args, 0, nullptr, 0) == 0)
             )
             return regExps;
 
-    return 0;
+    return nullptr;
 }
 
 static char*
@@ -60,7 +60,7 @@ formatUserMessage (vector<Message> message)
 {
     static char theMessage[4096];
 
-    time_t now = time (0);
+    time_t now = time (nullptr);
     char tempString[256];
 
     theMessage[0] = '\0';

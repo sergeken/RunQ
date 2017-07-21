@@ -56,7 +56,7 @@ public:
     RunQError(enum ErrorCode errorCode)
     {
         error = errorCode;
-        info = 0;
+        info = nullptr;
     };
     RunQError(enum ErrorCode errorCode, const char text[])
     {

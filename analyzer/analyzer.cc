@@ -39,7 +39,7 @@
 
 #include "analyzer.h"
 #include "util.h"
-#include <ctype.h>
+#include <cctype>
 #include <algorithm>
 
 using std::endl;
@@ -52,10 +52,10 @@ excludeProcess (const ProcessGroup & aProcessGroup,
                 const char user[], const char group[])
 {
     for (auto const & regExp : aProcessGroup.excludeProcs)
-        if (regexec (&regExp.name.preg, name, 0, 0, 0) == 0
-            && (regExp.args.expression != "" || regexec (&regExp.args.preg, args, 0, 0, 0) == 0)
-            && (regExp.user.expression != "" || regexec (&regExp.user.preg, user, 0, 0, 0) == 0)
-            && (regExp.group.expression != "" || regexec (&regExp.group.preg, group, 0, 0, 0) == 0)
+        if (regexec (&regExp.name.preg, name, 0, nullptr, 0) == 0
+            && (regExp.args.expression != "" || regexec (&regExp.args.preg, args, 0, nullptr, 0) == 0)
+            && (regExp.user.expression != "" || regexec (&regExp.user.preg, user, 0, nullptr, 0) == 0)
+            && (regExp.group.expression != "" || regexec (&regExp.group.preg, group, 0, nullptr, 0) == 0)
             )
             return true;
     return false;
@@ -68,10 +68,10 @@ includeProcess (const ProcessGroup & aProcessGroup,
                 const char user[], const char group[])
 {
     for (auto const & regExp : aProcessGroup.includeProcs)
-        if (regexec (&regExp.name.preg, name, 0, 0, 0) == 0
-            && (regExp.args.expression != "" || regexec (&regExp.args.preg, args, 0, 0, 0) == 0)
-            && (regExp.user.expression != "" || regexec (&regExp.user.preg, user, 0, 0, 0) == 0)
-            && (regExp.group.expression != "" || regexec (&regExp.group.preg, group, 0, 0, 0) == 0)
+        if (regexec (&regExp.name.preg, name, 0, nullptr, 0) == 0
+            && (regExp.args.expression != "" || regexec (&regExp.args.preg, args, 0, nullptr, 0) == 0)
+            && (regExp.user.expression != "" || regexec (&regExp.user.preg, user, 0, nullptr, 0) == 0)
+            && (regExp.group.expression != "" || regexec (&regExp.group.preg, group, 0, nullptr, 0) == 0)
             )
             if (!excludeProcess (aProcessGroup, name, args, user, group))
                 return true;
@@ -241,7 +241,7 @@ Analyzer::analyze (PerfData & rawData, const bool fixTimes,
     // First childeren of existing allocations
     auto theProcessFamily = std::vector<ProcessFamily> {};
     for (auto & iter : processList) {
-        ProcessFamily aProcessFamilyEntry (iter.second.PPID, 0, 0);
+        ProcessFamily aProcessFamilyEntry (iter.second.PPID, nullptr, nullptr);
         auto aProcessFamily = find (theProcessFamily.begin (), theProcessFamily.end (), aProcessFamilyEntry);
         if (aProcessFamily != theProcessFamily.end ()
             && !excludeProcess (*(aProcessFamily->processGroup),

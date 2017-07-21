@@ -37,7 +37,7 @@
  *
  */
 
-#include <string.h>
+#include <cstring>
 #include <fstream>
 
 #include "runq_error.h"
@@ -77,7 +77,7 @@ public:
 
 class DataStore : public std::fstream {
 public:
-    DataStore() : std::fstream () {};
+    DataStore() = default;
     DataStore(const char name[], const std::_Ios_Openmode mode, RunQFileType fileType)
     throw (RunQError);
     void

@@ -38,8 +38,8 @@
 
 using namespace std;
 
-#include <iostream.h>
-#include <string.h>
+#include <iostream>
+#include <cstring>
 #include <stl.h>
 
 #include "perfdata.h"

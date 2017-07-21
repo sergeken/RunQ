@@ -36,7 +36,7 @@
 
 
 #include "model.h"
-#include <math.h>
+#include <cmath>
 
 using std::endl;
 

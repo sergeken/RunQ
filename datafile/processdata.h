@@ -144,7 +144,7 @@ ProcessList::findProcess (const ProcessID PID)
 {
     auto processListIterator = find (PID);
     if (processListIterator == end ())
-        return 0;
+        return nullptr;
     else
         return &(processListIterator->second);
 }

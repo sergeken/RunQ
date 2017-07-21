@@ -74,35 +74,35 @@ LinuxPerfData::LinuxPerfData() throw (RunQError)
     }
 
     statFile = fopen (LINUX_STATFILE, "r");
-    if (statFile == NULL)
+    if (statFile == nullptr)
         throw (RunQError::FileNotFound, LINUX_STATFILE);
 
     diskFile = fopen (LINUX_DISKFILE, "r");
-    if (diskFile == NULL)
+    if (diskFile == nullptr)
         throw (RunQError::FileNotFound, LINUX_DISKFILE);
 
     memoryFile = fopen (LINUX_MEMFILE, "r");
-    if (memoryFile == NULL) {
+    if (memoryFile == nullptr) {
         fclose (statFile);
         throw (RunQError::FileNotFound, LINUX_MEMFILE);
     }
 
     loadFile = fopen (LINUX_LOADFILE, "r");
-    if (loadFile == NULL) {
+    if (loadFile == nullptr) {
         fclose (memoryFile);
         fclose (statFile);
         throw (RunQError::FileNotFound, LINUX_LOADFILE);
     }
 
     networkFile = fopen (LINUX_NETWORK, "r");
-    if (networkFile == NULL) {
+    if (networkFile == nullptr) {
         fclose (memoryFile);
         fclose (statFile);
         throw (RunQError::FileNotFound, LINUX_NETWORK);
     }
 
     procDirectory = opendir (LINUX_PROCDIR);
-    if (procDirectory == NULL) {
+    if (procDirectory == nullptr) {
         fclose (memoryFile);
         fclose (statFile);
         fclose (networkFile);
@@ -223,7 +223,7 @@ LinuxPerfData::getProcessData (long PID) throw (RunQError)
 
     sprintf (buffer, LINUX_PROCDIR "/%d/stat", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile == NULL) {
+    if (processFile == nullptr) {
         // We won't throw an execption here, as probably the process died
         // while we where watching.
         return;
@@ -285,7 +285,7 @@ LinuxPerfData::getProcessData (long PID) throw (RunQError)
 
     sprintf (buffer, LINUX_PROCDIR "/%d/status", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile != NULL) {
+    if (processFile != nullptr) {
         while (fgets (buffer, sizeof(buffer) - 1, processFile)) {
             if (memcmp (buffer, "Uid:", 4) == 0) {
                 sscanf (buffer, "%*s %d",
@@ -301,7 +301,7 @@ LinuxPerfData::getProcessData (long PID) throw (RunQError)
 
     sprintf (buffer, LINUX_PROCDIR "/%d/cmdline", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile != NULL) {
+    if (processFile != nullptr) {
         bytes = fread (aProcess.args, 1, sizeof(aProcess.args), processFile);
         fclose (processFile);
         aProcess.args[bytes] = '\0';
@@ -358,7 +358,7 @@ LinuxPerfData::getStaticCPUData () throw (RunQError)
     strcpy (staticData.CPU.OSRelease, unameData.release);
 
     FILE* CPUFile = fopen (LINUX_CPUINFO, "r");
-    if (CPUFile == NULL)
+    if (CPUFile == nullptr)
         throw (RunQError::FileNotFound, LINUX_CPUINFO);
 
     staticData.CPU.numberOfCPUs = 0;
@@ -442,7 +442,7 @@ LinuxPerfData::getStaticIOData () throw (RunQError)
                 strncat (buffer2, aDisk.name, sizeof(buffer2) - 1);
                 strncat (buffer2, IDEMODEL, sizeof(buffer2) - 1);
                 ideFile = fopen (buffer2, "r");
-                if (ideFile != NULL) {
+                if (ideFile != nullptr) {
                     if (fgets (buffer, sizeof(buffer) - 1, ideFile)) {
                         int i = strlen (buffer);
                         if (i > 0 && buffer[i - 1] == '\n') {
@@ -459,7 +459,7 @@ LinuxPerfData::getStaticIOData () throw (RunQError)
 
                 strncpy (buffer2, SCSIBASE, sizeof(buffer2) - 1);
                 scsiFile = fopen (buffer2, "r");
-                if (scsiFile != NULL) {
+                if (scsiFile != nullptr) {
                     if (fgets (buffer, sizeof(buffer) - 1, scsiFile)) {}
                     fclose (scsiFile);
                 }

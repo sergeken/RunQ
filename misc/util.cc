@@ -1,4 +1,4 @@
-#include <string.h>
+#include <cstring>
 #include <stdlib.h>
 #include <sys/utsname.h>
 
@@ -78,10 +78,10 @@ parseTime (char timeString[], int & hour, int & minute)
 
     p1 = strtok (timeString, ":");
     if (p1) {
-        hour = atol (p1);
-        p2 = strtok (0, ":");
+        hour = atoi (p1);
+        p2 = strtok (nullptr, ":");
         if (p2) {
-            minute = atol (p2);
+            minute = atoi (p2);
         }
     }
 }

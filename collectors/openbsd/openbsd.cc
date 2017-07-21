@@ -74,7 +74,7 @@ OpenBSDPerfData::OpenBSDPerfData() throw (RunQError)
 #endif
 
     procDirectory = opendir (OBSD_PROCDIR);
-    if (procDirectory == NULL) {
+    if (procDirectory == nullptr) {
         fclose (memoryFile);
         fclose (statFile);
         fclose (networkFile);
@@ -130,7 +130,7 @@ OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
 
     snprintf (buffer, sizeof(buffer), OBSD_PROCDIR "/%d/stat", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile == NULL) {
+    if (processFile == nullptr) {
         // We won't throw an execption here, as probably the process died
         // while we where watching.
         return;
@@ -192,7 +192,7 @@ OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
 
     snprintf (buffer, sizeof(buffer), OBSD_PROCDIR "/%d/status", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile != NULL) {
+    if (processFile != nullptr) {
         while (fgets (buffer, sizeof(buffer) - 1, processFile)) {
             if (memcmp (buffer, "Uid:", 4) == 0) {
                 sscanf (buffer, "%*s %d",
@@ -208,7 +208,7 @@ OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
 
     snprintf (buffer, sizeof(buffer), OBSD_PROCDIR "/%d/cmdline", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile != NULL) {
+    if (processFile != nullptr) {
         bytes = fread (aProcess.args, 1, sizeof(aProcess.args), processFile);
         fclose (processFile);
         aProcess.args[bytes] = '\0';

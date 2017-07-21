@@ -38,9 +38,9 @@
  *
  */
 
-#include <string.h>
+#include <string>
 #include <unistd.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 
 #include "runq_error.h"
@@ -109,14 +109,14 @@ report (int argc, char*argv[])
             break;
         }
     }
-    if (dataFile == 0) {
+    if (dataFile == nullptr) {
         cerr << "*** ERROR: invalid datafile (-d)." << endl;
         return;
     }
-    if (startTime != 0) {
+    if (startTime != nullptr) {
         parseTime (startTime, startHour, startMinute);
     }
-    if (endTime != 0) {
+    if (endTime != nullptr) {
         parseTime (endTime, endHour, endMinute);
     }
 
@@ -358,14 +358,14 @@ report_procs (int argc, char*argv[])
             break;
         }
     }
-    if (dataFile == 0) {
+    if (dataFile == nullptr) {
         cerr << "*** ERROR: invalid datafile (-d)." << endl;
         return;
     }
-    if (startTime != 0) {
+    if (startTime != nullptr) {
         parseTime (startTime, startHour, startMinute);
     }
-    if (endTime != 0) {
+    if (endTime != nullptr) {
         parseTime (endTime, endHour, endMinute);
     }
 

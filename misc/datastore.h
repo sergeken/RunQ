@@ -78,19 +78,16 @@ public:
 class DataStore : public std::fstream {
 public:
     DataStore() = default;
-    DataStore(const char name[], const std::_Ios_Openmode mode, RunQFileType fileType)
-    throw (RunQError);
+    DataStore(const char name[], const std::_Ios_Openmode mode, RunQFileType aFileType);
     void
-    open (const char name[], const std::_Ios_Openmode mode, const RunQFileType fileType)
-    throw (RunQError);
+    open (const char name[], const std::_Ios_Openmode mode, const RunQFileType aFileType);
     void
-    put (void*data, const size_t size) throw (RunQError);
+    put (void*data, const size_t size);
     void
-    get (void*data, const size_t size) throw (RunQError);
+    get (void*data, const size_t size);
 private:
     void
-    checkFileType (const std::_Ios_Openmode mode, const RunQFileType fileType)
-    throw (RunQError);
+    checkFileType (const std::_Ios_Openmode mode, const RunQFileType aFileType);
 private:
     MagicID magicID;
 };

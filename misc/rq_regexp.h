@@ -47,7 +47,7 @@ public:
     regex_t preg;
 
     RegExp() = default;
-    RegExp(const std::string input) : expression {input}
+    RegExp(const std::string & input) : expression {input}
     {regcomp (&preg, expression.c_str (), REG_NOSUB);}
 };
 

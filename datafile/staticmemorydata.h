@@ -42,9 +42,9 @@
 class StaticMemoryData {
 public:
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
 
 public:
     double physicalMemory;
@@ -53,13 +53,13 @@ public:
 };
 
 inline void
-StaticMemoryData::get (DataStore & dataStore) throw (RunQError)
+StaticMemoryData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-StaticMemoryData::put (DataStore & dataStore) throw (RunQError)
+StaticMemoryData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }

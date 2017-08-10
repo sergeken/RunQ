@@ -17,9 +17,9 @@
 
 #include "solaris.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <dirent.h>
-#include <ctype.h>
+#include <cctype>
 #include <pwd.h>
 #include <grp.h>
 #include <sys/utsname.h>
@@ -34,7 +34,7 @@
 #define VENDOR "Vendor"
 #define PRODUCT "Product"
 
-SolarisPerfData::SolarisPerfData() throw (RunQError)
+SolarisPerfData::SolarisPerfData()
 {
     // seteuid(getuid());
     kc = kstat_open ();
@@ -59,7 +59,7 @@ SolarisPerfData::~SolarisPerfData()
 
 
 void
-SolarisPerfData::getStaticCPUData () throw (RunQError)
+SolarisPerfData::getStaticCPUData ()
 {
     kstat_t*ks;
     kid_t kcid;
@@ -95,7 +95,7 @@ SolarisPerfData::getStaticCPUData () throw (RunQError)
 
 
 void
-SolarisPerfData::getStaticMemoryData () throw (RunQError)
+SolarisPerfData::getStaticMemoryData ()
 {
     kstat_t*ks;
     kid_t kcid;
@@ -117,7 +117,7 @@ SolarisPerfData::getStaticMemoryData () throw (RunQError)
 
 
 void
-SolarisPerfData::getDynamicMemoryData () throw (RunQError)
+SolarisPerfData::getDynamicMemoryData ()
 {
     kstat_t*ks;
     kid_t kcid;
@@ -135,7 +135,7 @@ SolarisPerfData::getDynamicMemoryData () throw (RunQError)
 
 
 void
-SolarisPerfData::getStaticIOData () throw (RunQError)
+SolarisPerfData::getStaticIOData ()
 {
     StaticDiskData aDisk;
     kstat_t*ks;
@@ -181,7 +181,7 @@ SolarisPerfData::getStaticIOData () throw (RunQError)
 }
 
 void
-SolarisPerfData::getDynamicCPUData () throw (RunQError)
+SolarisPerfData::getDynamicCPUData ()
 {
     kstat_t*ks;
     kid_t kcid;
@@ -217,7 +217,7 @@ SolarisPerfData::getDynamicCPUData () throw (RunQError)
 
 
 void
-SolarisPerfData::getDynamicIOData () throw (RunQError)
+SolarisPerfData::getDynamicIOData ()
 {
     kstat_t*ks;
     kid_t kcid;
@@ -238,7 +238,7 @@ SolarisPerfData::getDynamicIOData () throw (RunQError)
 
 
 void
-SolarisPerfData::sample (const bool fullSample) throw (RunQError)
+SolarisPerfData::sample (const bool fullSample)
 {
     if (fullSample) {
         kid_t kcid;
@@ -257,7 +257,7 @@ SolarisPerfData::sample (const bool fullSample) throw (RunQError)
 
 
 void
-SolarisPerfData::getProcesssData (const long PID) throw (RunQError)
+SolarisPerfData::getProcesssData (const long PID)
 {
     ProcessData aProcess;
     FILE* processFile;
@@ -268,7 +268,7 @@ SolarisPerfData::getProcesssData (const long PID) throw (RunQError)
 
     sprintf (buffer, "/proc/%d/psinfo", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile == 0) {
+    if (processFile == nullptr) {
         return;
     }
     fread (&currproc, sizeof(currproc), 1, processFile);
@@ -282,7 +282,7 @@ SolarisPerfData::getProcesssData (const long PID) throw (RunQError)
 
     sprintf (buffer, "/proc/%d/usage", (int)PID);
     processFile = fopen (buffer, "r");
-    if (processFile == 0) {
+    if (processFile == nullptr) {
         return;
     }
     fread (&procusage, sizeof(procusage), 1, processFile);
@@ -333,7 +333,7 @@ SolarisPerfData::getProcesssData (const long PID) throw (RunQError)
 
 
 void
-SolarisPerfData::getProcesssesData () throw (RunQError)
+SolarisPerfData::getProcesssesData ()
 {
     struct dirent* directoryEntry;
     long PID;
@@ -341,7 +341,7 @@ SolarisPerfData::getProcesssesData () throw (RunQError)
 
     // seteuid(0);
     rewinddir (procDirectory);
-    while ((directoryEntry = readdir (procDirectory))) {
+    while ((directoryEntry = readdir (procDirectory)) != nullptr) {
         PID = atol (directoryEntry->d_name);
         if (PID > 0)
             getProcesssData (PID);
@@ -351,12 +351,12 @@ SolarisPerfData::getProcesssesData () throw (RunQError)
 
 
 void
-SolarisPerfData::getUsersData () throw (RunQError)
+SolarisPerfData::getUsersData ()
 {
     StaticUserData aUser;
     struct passwd* passwdEntry;
 
-    while (passwdEntry = getpwent ()) {
+    while (passwdEntry = getpwent () != nullptr) {
         aUser.uid = passwdEntry->pw_uid;
         strncpy (aUser.name, passwdEntry->pw_name, sizeof(aUser.name) - 1);
         aUser.name[sizeof(aUser.name) - 1] = '\0';
@@ -367,12 +367,12 @@ SolarisPerfData::getUsersData () throw (RunQError)
 
 
 void
-SolarisPerfData::getGroupsData () throw (RunQError)
+SolarisPerfData::getGroupsData ()
 {
     StaticGroupData aGroup;
     struct group* groupEntry;
 
-    while (groupEntry = getgrent ()) {
+    while (groupEntry = getgrent () != nullptr) {
         aGroup.gid = groupEntry->gr_gid;
         strncpy (aGroup.name, groupEntry->gr_name, sizeof(aGroup.name));
         aGroup.name[sizeof(aGroup.name)] = '\0';

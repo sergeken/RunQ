@@ -42,9 +42,9 @@
 class DynamicCPUData {
 public:
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
 public:
     double user;
     double nice;
@@ -55,13 +55,13 @@ public:
 };
 
 inline void
-DynamicCPUData::get (DataStore & dataStore) throw (RunQError)
+DynamicCPUData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-DynamicCPUData::put (DataStore & dataStore) throw (RunQError)
+DynamicCPUData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }

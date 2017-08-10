@@ -32,7 +32,7 @@
 // #define CPU_SXBRK	4
 #define CPU_NICE        4
 
-HPUXPerfData::HPUXPerfData() throw (RunQError)
+HPUXPerfData::HPUXPerfData()
 {
     // seteuid(getuid());
     getStaticCPUData ();
@@ -47,7 +47,7 @@ HPUXPerfData::~HPUXPerfData()
 
 
 void
-HPUXPerfData::getStaticCPUData () throw (RunQError)
+HPUXPerfData::getStaticCPUData ()
 {
     struct utsname unameData;
     struct pst_dynamic psd;
@@ -75,7 +75,7 @@ HPUXPerfData::getStaticCPUData () throw (RunQError)
 
 
 void
-HPUXPerfData::getStaticMemoryData () throw (RunQError)
+HPUXPerfData::getStaticMemoryData ()
 {
     struct pst_static pst;
     struct pst_dynamic psd;
@@ -95,7 +95,7 @@ HPUXPerfData::getStaticMemoryData () throw (RunQError)
 
 
 void
-HPUXPerfData::getDynamicMemoryData () throw (RunQError)
+HPUXPerfData::getDynamicMemoryData ()
 {
     struct pst_dynamic psd;
 
@@ -108,7 +108,7 @@ HPUXPerfData::getDynamicMemoryData () throw (RunQError)
 
 
 void
-HPUXPerfData::getStaticIOData () throw (RunQError)
+HPUXPerfData::getStaticIOData ()
 {
     StaticDiskData aDisk;
 
@@ -120,7 +120,7 @@ HPUXPerfData::getStaticIOData () throw (RunQError)
 
 
 void
-HPUXPerfData::getDynamicCPUData () throw (RunQError)
+HPUXPerfData::getDynamicCPUData ()
 {
     int Counter;
     struct pst_dynamic psd;
@@ -145,7 +145,7 @@ HPUXPerfData::getDynamicCPUData () throw (RunQError)
 
 
 void
-HPUXPerfData::getDynamicIOData () throw (RunQError)
+HPUXPerfData::getDynamicIOData ()
 {
     dynamicData.IO.bytesRead = 0;
     dynamicData.IO.bytesWritten = 0;
@@ -153,7 +153,7 @@ HPUXPerfData::getDynamicIOData () throw (RunQError)
 
 
 void
-HPUXPerfData::sample (const bool fullSample) throw (RunQError)
+HPUXPerfData::sample (const bool fullSample)
 {
     getProcesssesData ();
     if (fullSample) {
@@ -165,7 +165,7 @@ HPUXPerfData::sample (const bool fullSample) throw (RunQError)
 
 
 void
-HPUXPerfData::getProcesssesData () throw (RunQError)
+HPUXPerfData::getProcesssesData ()
 {
     int NrOfProcesses;
     int Index;
@@ -227,7 +227,7 @@ HPUXPerfData::getProcesssesData () throw (RunQError)
 
 
 void
-HPUXPerfData::getUsersData () throw (RunQError)
+HPUXPerfData::getUsersData ()
 {
     StaticUserData aUser;
     struct passwd* passwdEntry;
@@ -243,7 +243,7 @@ HPUXPerfData::getUsersData () throw (RunQError)
 
 
 void
-HPUXPerfData::getGroupsData () throw (RunQError)
+HPUXPerfData::getGroupsData ()
 {
     StaticGroupData aGroup;
     struct group* groupEntry;

@@ -35,8 +35,8 @@
 
 #include <iostream>
 #include <unistd.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 #include <sys/types.h>
 
 #include "collect.h"
@@ -72,7 +72,6 @@ using std::cerr;
 void
 collect (const char dataFile[], const int duration, const int spanTime,
          const bool noSleep)
-throw (RunQError)
 {
     time_t startTime, currentTime;
     PerfData* perfData =
@@ -84,15 +83,15 @@ throw (RunQError)
     perfData->put ();
 
     int i, j;
-    startTime = time (0);
+    startTime = time (nullptr);
     // convert duration to seconds and divide by the spanTime (in secs)
     for (i = 0; i < (int)((60.0 * duration) / (double)spanTime); i++) {
-        currentTime = time (0);
+        currentTime = time (nullptr);
         while (difftime (currentTime, startTime + i * spanTime) < spanTime - 1) {
             perfData->sample (false);
             if (!noSleep)
                 sleep (1);
-            currentTime = time (0);
+            currentTime = time (nullptr);
         }
         perfData->sample (true);
         perfData->dynamicData.timeStamp = time (nullptr);
@@ -104,7 +103,7 @@ throw (RunQError)
 }
 
 void
-collect_main (const int argc, char*argv[]) throw (RunQError)
+collect_main (const int argc, char*argv[])
 {
     int option;
     int minutes = 0;
@@ -135,7 +134,7 @@ collect_main (const int argc, char*argv[]) throw (RunQError)
         cerr << "*** ERROR: invalid duration (-m) : " << minutes << endl;
         return;
     }
-    if (dataFile == 0) {
+    if (dataFile) {
         cerr << "*** ERROR: invalid datafile." << endl;
         return;
     }

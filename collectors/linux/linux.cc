@@ -61,14 +61,14 @@ using std::endl;
 //#define GOOD_LINUX_VERSION "2.6"
 #define GOOD_LINUX_VERSION "4.8"
 
-LinuxPerfData::LinuxPerfData() throw (RunQError)
+LinuxPerfData::LinuxPerfData()
 {
     struct utsname unameData;
 
     uname (&unameData);
-    if (strcmp (unameData.sysname, "Linux")
-        || strncmp (unameData.release, GOOD_LINUX_VERSION,
-                    sizeof(GOOD_LINUX_VERSION) - 1)
+    if ((strcmp (unameData.sysname, "Linux") != 0)
+        || (strncmp (unameData.release, GOOD_LINUX_VERSION,
+                    sizeof(GOOD_LINUX_VERSION) - 1) != 0)
         ) {
         throw RunQError (RunQError::InvalidVersion);
     }
@@ -125,7 +125,7 @@ LinuxPerfData::~LinuxPerfData()
 }
 
 void
-LinuxPerfData::sample (bool lastSample) throw (RunQError)
+LinuxPerfData::sample (bool lastSample)
 {
     getProcessList ();
     if (lastSample) {
@@ -136,7 +136,7 @@ LinuxPerfData::sample (bool lastSample) throw (RunQError)
 }
 
 void
-LinuxPerfData::getDynamicCPUData () throw (RunQError)
+LinuxPerfData::getDynamicCPUData ()
 {
     char buffer[256];
 
@@ -163,7 +163,7 @@ LinuxPerfData::getDynamicCPUData () throw (RunQError)
 
 
 void
-LinuxPerfData::getDynamicIOData () throw (RunQError)
+LinuxPerfData::getDynamicIOData ()
 {
     double d1, d2, d3, d4;
     int minor;
@@ -186,7 +186,7 @@ LinuxPerfData::getDynamicIOData () throw (RunQError)
 }
 
 void
-LinuxPerfData::getDynamicMemoryData () throw (RunQError)
+LinuxPerfData::getDynamicMemoryData ()
 {
     char buffer[256];
 
@@ -206,7 +206,7 @@ LinuxPerfData::getDynamicMemoryData () throw (RunQError)
     rewind (statFile);
     while (fgets (buffer, sizeof(buffer) - 1, statFile)) {
         if (memcmp (buffer, PAGINGID, sizeof(PAGINGID) - 1) == 0) {
-            sscanf (buffer, "%*s %ld %ld",
+            sscanf (buffer, "%*s %lf %lf",
                     &dynamicData.memory.pagedIn,
                     &dynamicData.memory.pagedOut);
         }
@@ -214,7 +214,7 @@ LinuxPerfData::getDynamicMemoryData () throw (RunQError)
 }
 
 void
-LinuxPerfData::getProcessData (long PID) throw (RunQError)
+LinuxPerfData::getProcessData (long PID)
 {
     ProcessData aProcess;
     FILE* processFile;
@@ -229,7 +229,7 @@ LinuxPerfData::getProcessData (long PID) throw (RunQError)
         return;
     }
     if (fscanf (processFile,
-                "%d (%s %*c %d %d %*d %*d %*d %*d %lu %lu %lu %lu %lf %lf %lf %lf %*d %*d %*d %*d %lu %lu %lu %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*d",
+                "%ld (%s %*c %ld %ld %*d %*d %*d %*d %lu %lu %lu %lu %lf %lf %lf %lf %*d %*d %*d %*d %lu %lu %lu %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*d",
                 &aProcess.PID,
                 aProcess.name,
                 // char state,
@@ -319,14 +319,14 @@ LinuxPerfData::getProcessData (long PID) throw (RunQError)
 }
 
 void
-LinuxPerfData::getProcessList () throw (RunQError)
+LinuxPerfData::getProcessList ()
 {
     struct dirent* directoryEntry;
     long PID;
     char buffer[256];
 
     rewinddir (procDirectory);
-    while ((directoryEntry = readdir (procDirectory))) {
+    while (directoryEntry = readdir (procDirectory)) {
         try {
             PID = atol (directoryEntry->d_name);
             if (PID > 0)
@@ -343,7 +343,7 @@ LinuxPerfData::getProcessList () throw (RunQError)
 }
 
 void
-LinuxPerfData::getStaticCPUData () throw (RunQError)
+LinuxPerfData::getStaticCPUData ()
 {
     char buffer[256];
     struct utsname unameData;
@@ -373,7 +373,7 @@ LinuxPerfData::getStaticCPUData () throw (RunQError)
         } else if (memcmp (buffer, FREQUENCY, sizeof(FREQUENCY) - 1) == 0) {
             sscanf (buffer, "%*s %*s : %lf", &staticData.CPU.frequency);
         } else if (memcmp (buffer, CACHESIZE, sizeof(CACHESIZE) - 1) == 0) {
-            sscanf (buffer, "%*s %*s : %d", &staticData.CPU.cacheSize);
+            sscanf (buffer, "%*s %*s : %ld", &staticData.CPU.cacheSize);
         } else if (memcmp (buffer, SPECINT, sizeof(SPECINT) - 1) == 0) {
             sscanf (buffer, "%*s : %lf", &staticData.CPU.specint);
         }
@@ -386,7 +386,7 @@ LinuxPerfData::getStaticCPUData () throw (RunQError)
 
 
 void
-LinuxPerfData::getStaticMemoryData () throw (RunQError)
+LinuxPerfData::getStaticMemoryData ()
 {
     char buffer[256];
 
@@ -402,7 +402,7 @@ LinuxPerfData::getStaticMemoryData () throw (RunQError)
 
 
 void
-LinuxPerfData::getStaticNetworkData () throw (RunQError)
+LinuxPerfData::getStaticNetworkData ()
 {
     StaticNetworkInterfaceData anInterface;
     char buffer[256];
@@ -422,7 +422,7 @@ LinuxPerfData::getStaticNetworkData () throw (RunQError)
 
 
 void
-LinuxPerfData::getStaticIOData () throw (RunQError)
+LinuxPerfData::getStaticIOData ()
 {
     StaticDiskData aDisk;
     char buffer[256];
@@ -442,7 +442,7 @@ LinuxPerfData::getStaticIOData () throw (RunQError)
                 strncat (buffer2, aDisk.name, sizeof(buffer2) - 1);
                 strncat (buffer2, IDEMODEL, sizeof(buffer2) - 1);
                 ideFile = fopen (buffer2, "r");
-                if (ideFile != nullptr) {
+                if (ideFile) {
                     if (fgets (buffer, sizeof(buffer) - 1, ideFile)) {
                         int i = strlen (buffer);
                         if (i > 0 && buffer[i - 1] == '\n') {
@@ -472,7 +472,7 @@ LinuxPerfData::getStaticIOData () throw (RunQError)
 }
 
 void
-LinuxPerfData::getUsersData () throw (RunQError)
+LinuxPerfData::getUsersData ()
 {
     StaticUserData aUser;
     struct passwd* passwdEntry;
@@ -486,7 +486,7 @@ LinuxPerfData::getUsersData () throw (RunQError)
 }
 
 void
-LinuxPerfData::getGroupsData () throw (RunQError)
+LinuxPerfData::getGroupsData ()
 {
     StaticGroupData aGroup;
     struct group* groupEntry;

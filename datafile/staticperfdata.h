@@ -48,9 +48,9 @@
 class StaticPerfData {
 public:
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
 public:
     StaticCPUData CPU;
     StaticMemoryData memory;
@@ -61,7 +61,7 @@ public:
 };
 
 inline void
-StaticPerfData::put (DataStore & dataStore) throw (RunQError)
+StaticPerfData::put (DataStore & dataStore)
 {
     CPU.put (dataStore);
     memory.put (dataStore);
@@ -72,7 +72,7 @@ StaticPerfData::put (DataStore & dataStore) throw (RunQError)
 }
 
 inline void
-StaticPerfData::get (DataStore & dataStore) throw (RunQError)
+StaticPerfData::get (DataStore & dataStore)
 {
     CPU.get (dataStore);
     memory.get (dataStore);

@@ -89,9 +89,9 @@ struct ProcessID_lt {
 class ProcessData : public ProcessID {
 public:
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
 
 public:
     long PGRP;
@@ -128,13 +128,13 @@ public:
 };
 
 inline void
-ProcessData::get (DataStore & dataStore) throw (RunQError)
+ProcessData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-ProcessData::put (DataStore & dataStore) throw (RunQError)
+ProcessData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }

@@ -516,9 +516,9 @@ analyze (int argc, char*argv[])
     auto fixTimes = false;
     auto dataFile = "perf.dat";
     auto workLoadFile = "workloads.wkl";
-    char* logFileName = {};
-    char* startTime = {};
-    char* endTime = {};
+    char* logFileName = nullptr;
+    char* startTime = nullptr;
+    char* endTime = nullptr;
 
     auto startHour = 0;
     auto startMinute = 0;
@@ -567,10 +567,10 @@ analyze (int argc, char*argv[])
         cerr << "*** ERROR: invalid workloadfile (-w)." << endl;
         return;
     }
-    if (startTime != 0) {
+    if (startTime) {
         parseTime (startTime, startHour, startMinute);
     }
-    if (endTime != 0) {
+    if (endTime) {
         parseTime (endTime, endHour, endMinute);
     }
     if (logFileName) {
@@ -671,7 +671,7 @@ main (int argc, char** argv)
                  << static_cast <int> (error.error)
                  << "), aborting ..."
                  << endl;
-            if (error.info != 0)
+            if (error.info != nullptr)
                 cerr << "*** Additional info: "
                      << error.info
                      << endl;

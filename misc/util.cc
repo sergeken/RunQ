@@ -1,5 +1,5 @@
 #include <cstring>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/utsname.h>
 
 #include "util.h"
@@ -21,7 +21,7 @@ usage (std::ostream & output)
 }
 
 void
-runQLogo (std::ostream & output) throw (RunQError)
+runQLogo (std::ostream & output)
 {
     struct utsname unameData;
 

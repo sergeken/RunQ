@@ -46,7 +46,7 @@ public:
     simulate (std::ostream & output = std::cout, const bool csvOutput = false);
 private:
     double
-    responseTime (const int numCPUs, const double utilisation, const double serviceTime);
+    responseTime (const int numOfCPUs, const double utilisation, const double serviceTime);
 };
 
 #endif // RUNQ_MODEL_H

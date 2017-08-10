@@ -47,9 +47,9 @@
 class StaticDiskData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 public:
     char name[RUNQ_DISKNAME_MAX];
     char type[RUNQ_DISKTYPE_MAX];
@@ -58,28 +58,28 @@ public:
 class StaticIOData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 
 public:
     std::vector<StaticDiskData> diskData;
 };
 
 inline void
-StaticDiskData::put (DataStore & dataStore) throw (RunQError)
+StaticDiskData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }
 
 inline void
-StaticDiskData::get (DataStore & dataStore) throw (RunQError)
+StaticDiskData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-StaticIOData::put (DataStore & dataStore) throw (RunQError)
+StaticIOData::put (DataStore & dataStore)
 {
     size_t size = diskData.size ();
     dataStore.put (&size, sizeof(size));
@@ -88,7 +88,7 @@ StaticIOData::put (DataStore & dataStore) throw (RunQError)
 }
 
 inline void
-StaticIOData::get (DataStore & dataStore) throw (RunQError)
+StaticIOData::get (DataStore & dataStore)
 {
     size_t size;
     StaticDiskData disk;

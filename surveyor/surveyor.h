@@ -112,7 +112,7 @@ public:
 class Surveyor : public PERFDATA {
 public:
     void
-    watchProcesses (void) throw (RunQError);
+    watchProcesses (void)
 private:
     WatchValues*
     watchProcess (const char name[], const char args[]);

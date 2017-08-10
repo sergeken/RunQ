@@ -59,7 +59,7 @@ using std::endl;
 #define GOOD_OBSD_VERSION "3.7"
 #endif
 
-OpenBSDPerfData::OpenBSDPerfData() throw (RunQError)
+OpenBSDPerfData::OpenBSDPerfData()
 {
     struct utsname unameData;
 
@@ -97,7 +97,7 @@ OpenBSDPerfData::~OpenBSDPerfData()
 }
 
 void
-OpenBSDPerfData::sample (bool lastSample) throw (RunQError)
+OpenBSDPerfData::sample (bool lastSample)
 {
     getProcessList ();
     if (lastSample) {
@@ -108,20 +108,20 @@ OpenBSDPerfData::sample (bool lastSample) throw (RunQError)
 }
 
 void
-OpenBSDPerfData::getDynamicCPUData () throw (RunQError)
+OpenBSDPerfData::getDynamicCPUData ()
 {}
 
 
 void
-OpenBSDPerfData::getDynamicIOData () throw (RunQError)
+OpenBSDPerfData::getDynamicIOData ()
 {}
 
 void
-OpenBSDPerfData::getDynamicMemoryData () throw (RunQError)
+OpenBSDPerfData::getDynamicMemoryData ()
 {}
 
 void
-OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
+OpenBSDPerfData::getProcessData (long PID)
 {
     ProcessData aProcess;
     FILE* processFile;
@@ -136,7 +136,7 @@ OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
         return;
     }
     if (fscanf (processFile,
-                "%d (%s %*c %d %d %*d %*d %*d %*d %lu %lu %lu %lu %lf %lf %lf %lf %*d %*d %*d %*d %lu %lu %lu %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*d",
+                "%ld (%s %*c %ld %ld %*d %*d %*d %*d %lu %lu %lu %lu %lf %lf %lf %lf %*d %*d %*d %*d %lu %lu %lu %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u %*d",
                 &aProcess.PID,
                 aProcess.name,
                 // char state,
@@ -226,14 +226,14 @@ OpenBSDPerfData::getProcessData (long PID) throw (RunQError)
 }
 
 void
-OpenBSDPerfData::getProcessList () throw (RunQError)
+OpenBSDPerfData::getProcessList ()
 {
     struct dirent* directoryEntry;
     long PID;
     char buffer[256];
 
     rewinddir (procDirectory);
-    while ((directoryEntry = readdir (procDirectory))) {
+    while (directoryEntry = readdir (procDirectory)) {
         try {
             PID = atol (directoryEntry->d_name);
             if (PID > 0)
@@ -250,26 +250,26 @@ OpenBSDPerfData::getProcessList () throw (RunQError)
 }
 
 void
-OpenBSDPerfData::getStaticCPUData () throw (RunQError)
+OpenBSDPerfData::getStaticCPUData ()
 {}
 
 
 void
-OpenBSDPerfData::getStaticMemoryData () throw (RunQError)
+OpenBSDPerfData::getStaticMemoryData ()
 {}
 
 
 void
-OpenBSDPerfData::getStaticNetworkData () throw (RunQError)
+OpenBSDPerfData::getStaticNetworkData ()
 {}
 
 
 void
-OpenBSDPerfData::getStaticIOData () throw (RunQError)
+OpenBSDPerfData::getStaticIOData ()
 {}
 
 void
-OpenBSDPerfData::getUsersData () throw (RunQError)
+OpenBSDPerfData::getUsersData ()
 {
     StaticUserData aUser;
     struct passwd* passwdEntry;
@@ -283,7 +283,7 @@ OpenBSDPerfData::getUsersData () throw (RunQError)
 }
 
 void
-OpenBSDPerfData::getGroupsData () throw (RunQError)
+OpenBSDPerfData::getGroupsData ()
 {
     StaticGroupData aGroup;
     struct group* groupEntry;

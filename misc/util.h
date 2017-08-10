@@ -51,6 +51,6 @@ beforeTime (const time_t & inTimeStamp, const int hour, const int minute);
 void
 parseTime (char timeString[], int & hour, int & minute);
 void
-runQLogo (std::ostream & output) throw (RunQError);
+runQLogo (std::ostream & output);
 
 #endif // RUNQ_MISC_H

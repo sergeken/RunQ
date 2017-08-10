@@ -49,9 +49,9 @@
 class DynamicPerfData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 
 public:
     time_t timeStamp;
@@ -63,7 +63,7 @@ public:
 
 
 inline void
-DynamicPerfData::get (DataStore & dataStore) throw (RunQError)
+DynamicPerfData::get (DataStore & dataStore)
 {
     dataStore.get (&timeStamp, sizeof(timeStamp));
     CPU.get (dataStore);
@@ -82,7 +82,7 @@ DynamicPerfData::get (DataStore & dataStore) throw (RunQError)
 }
 
 inline void
-DynamicPerfData::put (DataStore & dataStore) throw (RunQError)
+DynamicPerfData::put (DataStore & dataStore)
 {
     dataStore.put (&timeStamp, sizeof(timeStamp));
     CPU.put (dataStore);

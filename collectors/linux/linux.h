@@ -20,7 +20,7 @@
 
 // using namespace std;
 
-#include <stdio.h>
+#include <cstdio>
 #include <dirent.h>
 
 #include "runq_error.h"
@@ -30,36 +30,35 @@
 
 class LinuxPerfData : public PerfData {
 public:
-    LinuxPerfData() throw (RunQError);
+    LinuxPerfData();
     ~LinuxPerfData();
-    virtual void
-    sample (bool fullSample) throw (RunQError);
+    void
+    sample (bool lastSample) override;
 private:
     void
-    getStaticCPUData () throw (RunQError);
+    getStaticCPUData ();
     void
-    getStaticMemoryData () throw (RunQError);
+    getStaticMemoryData ();
     void
-    getStaticNetworkData () throw (RunQError);
+    getStaticNetworkData ();
     void
-    getStaticIOData () throw (RunQError);
+    getStaticIOData ();
     void
-    getUsersData () throw (RunQError);
+    getUsersData ();
     void
-    getGroupsData () throw (RunQError);
+    getGroupsData ();
     void
-    getDynamicCPUData () throw (RunQError);
+    getDynamicCPUData ();
     void
-    getDynamicIOData () throw (RunQError);
+    getDynamicIOData ();
     void
-    getDynamicMemoryData () throw (RunQError);
+    getDynamicMemoryData ();
     void
-    getProcessData (long) throw (RunQError);
+    getProcessData (long);
     void
-    getProcessList () throw (RunQError);
+    getProcessList ();
     void
-    scanIOControllerDirectory (char controllerDir[], char diskPrefix[])
-    throw (RunQError);
+    scanIOControllerDirectory (char controllerDir[], char diskPrefix[]);
 
 private:
     FILE* statFile;

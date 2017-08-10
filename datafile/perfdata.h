@@ -45,17 +45,17 @@
 class PerfData {
 public:
     void
-    create (const char fileName[]) throw (RunQError);
+    create (const char fileName[]);
     void
-    open (const char fileName[]) throw (RunQError);
+    open (const char fileName[]);
     void
     close ();
     void
-    get () throw (RunQError);
+    get ();
     void
-    put () throw (RunQError);
+    put ();
     virtual void
-    sample (const bool fullSample) throw (RunQError);
+    sample (const bool fullSample);
 
 public:
     DataStore dataStore;

@@ -88,7 +88,7 @@ formatUserMessage (vector<Message> message)
 
 
 void
-Surveyor::watchProcesses (void) throw (RunQError)
+Surveyor::watchProcesses (void)
 {
     ProcessList previousProcesses;
 

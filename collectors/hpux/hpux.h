@@ -26,34 +26,34 @@
 
 class HPUXPerfData : public PerfData {
 public:
-    HPUXPerfData() throw (RunQError);
+    HPUXPerfData();
     ~HPUXPerfData();
     virtual void
-    sample (const bool lastSample) throw (RunQError);
+    sample (const bool fullSample);
 private:
     //  kstat_ctl_t * kc;
     //  DIR *procDirectory;
 private:
     void
-    getStaticCPUData () throw (RunQError);
+    getStaticCPUData ();
     void
-    getStaticMemoryData () throw (RunQError);
+    getStaticMemoryData ();
     void
-    getStaticIOData () throw (RunQError);
+    getStaticIOData ();
     void
-    getUsersData () throw (RunQError);
+    getUsersData ();
     void
-    getGroupsData () throw (RunQError);
+    getGroupsData ();
     void
-    getDynamicCPUData () throw (RunQError);
+    getDynamicCPUData ();
     void
-    getDynamicIOData () throw (RunQError);
+    getDynamicIOData ();
     void
-    getDynamicMemoryData () throw (RunQError);
+    getDynamicMemoryData ();
     void
-    getProcesssData (const long Pid) throw (RunQError);
+    getProcesssData (const long Pid);
     void
-    getProcesssesData () throw (RunQError);
+    getProcesssesData ();
 };
 
 #endif // RUNQ_HPUX_H

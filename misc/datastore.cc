@@ -36,15 +36,13 @@
 
 #include "datastore.h"
 
-DataStore::DataStore(const char name[], const std::_Ios_Openmode mode, const RunQFileType aFileType)
-throw (RunQError) : std::fstream (name, mode)
+DataStore::DataStore(const char name[], const std::_Ios_Openmode mode, const RunQFileType aFileType) : std::fstream (name, mode)
 {
     checkFileType (mode, aFileType);
 }
 
 void
 DataStore::open (const char name[], const std::_Ios_Openmode mode, const RunQFileType aFileType)
-throw (RunQError)
 {
     std::fstream::open (name, mode);
     if (!is_open ())
@@ -53,7 +51,7 @@ throw (RunQError)
 }
 
 void
-DataStore::get (void*data, const size_t size) throw (RunQError)
+DataStore::get (void*data, const size_t size)
 {
     read ((char*)data, size);
     if (!*this)
@@ -61,7 +59,7 @@ DataStore::get (void*data, const size_t size) throw (RunQError)
 }
 
 void
-DataStore::put (void*data, const size_t size) throw (RunQError)
+DataStore::put (void*data, const size_t size)
 {
     write ((char*)data, size);
     if (!*this)
@@ -70,7 +68,6 @@ DataStore::put (void*data, const size_t size) throw (RunQError)
 
 void
 DataStore::checkFileType (const std::_Ios_Openmode mode, const RunQFileType aFileType)
-throw (RunQError)
 {
     auto aMagicID = MagicID {aFileType};
 

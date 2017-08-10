@@ -15,7 +15,7 @@
  *
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream.h>
 #include <dirent.h>
 #include <unistd.h>

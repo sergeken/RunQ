@@ -47,9 +47,9 @@
 class StaticNetworkInterfaceData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 public:
     char name[RUNQ_NETNAME_MAX];
     char ip4[RUNQ_IP4_MAX];
@@ -58,28 +58,28 @@ public:
 class StaticNetworkData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 
 public:
     std::vector<StaticNetworkInterfaceData> interfaces;
 };
 
 inline void
-StaticNetworkInterfaceData::put (DataStore & dataStore) throw (RunQError)
+StaticNetworkInterfaceData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }
 
 inline void
-StaticNetworkInterfaceData::get (DataStore & dataStore) throw (RunQError)
+StaticNetworkInterfaceData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-StaticNetworkData::put (DataStore & dataStore) throw (RunQError)
+StaticNetworkData::put (DataStore & dataStore)
 {
     size_t size = interfaces.size ();
     dataStore.put (&size, sizeof(size));
@@ -88,7 +88,7 @@ StaticNetworkData::put (DataStore & dataStore) throw (RunQError)
 }
 
 inline void
-StaticNetworkData::get (DataStore & dataStore) throw (RunQError)
+StaticNetworkData::get (DataStore & dataStore)
 {
     size_t size;
     StaticNetworkInterfaceData interface;

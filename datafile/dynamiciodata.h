@@ -42,9 +42,9 @@
 class DynamicIOData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 
 public:
     double bytesRead;
@@ -52,13 +52,13 @@ public:
 };
 
 inline void
-DynamicIOData::get (DataStore & dataStore) throw (RunQError)
+DynamicIOData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-DynamicIOData::put (DataStore & dataStore) throw (RunQError)
+DynamicIOData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }

@@ -42,9 +42,9 @@
 class DynamicMemoryData {
 public:
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
 
 public:
     double free;
@@ -57,13 +57,13 @@ public:
 };
 
 inline void
-DynamicMemoryData::get (DataStore & dataStore) throw (RunQError)
+DynamicMemoryData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-DynamicMemoryData::put (DataStore & dataStore) throw (RunQError)
+DynamicMemoryData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }

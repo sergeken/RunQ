@@ -40,9 +40,8 @@
 
 void
 collect (const char dataFile[], const int duration, const int spanTime,
-         const bool noSleep)
-throw (RunQError);
+         const bool noSleep);
 void
-collect_main (const int argc, char*argv[]) throw (RunQError);
+collect_main (const int argc, char*argv[]);
 
 #endif // RUNQ_COLLECT_H

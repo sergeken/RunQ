@@ -83,7 +83,6 @@ ProcessList
 Analyzer::processRawData (PerfData & rawData, const bool fixTimes,
                           const int startHour, const int startMinute,
                           const int endHour, const int endMinute)
-throw (RunQError)
 {
     auto idlecpu = 0.0;
     auto waitcpu = 0.0;

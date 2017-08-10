@@ -42,9 +42,9 @@
 class StaticCPUData {
 public:
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
 
 public:
     char node[64];
@@ -61,13 +61,13 @@ public:
 };
 
 inline void
-StaticCPUData::get (DataStore & dataStore) throw (RunQError)
+StaticCPUData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-StaticCPUData::put (DataStore & dataStore) throw (RunQError)
+StaticCPUData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }

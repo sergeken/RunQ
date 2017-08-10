@@ -54,9 +54,9 @@ struct groupLessThan {
 class StaticGroupData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 public:
     int gid;
     char name[RUNQ_GROUPNAME_MAX];
@@ -65,25 +65,25 @@ public:
 class StaticGroupList : public std::map<int, StaticGroupData, groupLessThan>{
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 };
 
 inline void
-StaticGroupData::put (DataStore & dataStore) throw (RunQError)
+StaticGroupData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }
 
 inline void
-StaticGroupData::get (DataStore & dataStore) throw (RunQError)
+StaticGroupData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-StaticGroupList::put (DataStore & dataStore) throw (RunQError)
+StaticGroupList::put (DataStore & dataStore)
 {
     size_t size = this->size ();
     dataStore.put (&size, sizeof(size));
@@ -93,7 +93,7 @@ StaticGroupList::put (DataStore & dataStore) throw (RunQError)
 }
 
 inline void
-StaticGroupList::get (DataStore & dataStore) throw (RunQError)
+StaticGroupList::get (DataStore & dataStore)
 {
     size_t size;
     StaticGroupData aGroup;

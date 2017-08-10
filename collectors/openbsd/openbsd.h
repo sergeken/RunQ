@@ -30,37 +30,36 @@
 
 class OpenBSDPerfData : public PerfData {
 public:
-    OpenBSDPerfData() throw (RunQError);
+    OpenBSDPerfData();
     ~OpenBSDPerfData();
     virtual void
-    sample (bool fullSample) throw (RunQError);
+    sample (bool lastSample);
 private:
     void
-    getStaticCPUData () throw (RunQError);
+    getStaticCPUData ();
     void
-    getStaticMemoryData () throw (RunQError);
+    getStaticMemoryData ();
     void
-    getStaticNetworkData () throw (RunQError);
+    getStaticNetworkData ();
     void
-    getStaticIOData () throw (RunQError);
+    getStaticIOData ();
     void
-    getUsersData () throw (RunQError);
+    getUsersData ();
     void
-    getGroupsData () throw (RunQError);
+    getGroupsData ();
     void
-    getDynamicCPUData () throw (RunQError);
+    getDynamicCPUData ();
     void
-    getDynamicIOData () throw (RunQError);
+    getDynamicIOData ();
     void
-    getDynamicMemoryData () throw (RunQError);
+    getDynamicMemoryData ();
     void
-    getProcessData (long) throw (RunQError);
+    getProcessData (long);
     void
-    getProcessList () throw (RunQError);
+    getProcessList ();
     void
-    OpenBSDPerfData::scanIOControllerDirectory (char controllerDir[],
-                                                char diskPrefix[])
-    throw (RunQError);
+    scanIOControllerDirectory (char controllerDir[],
+                                                char diskPrefix[]);
 
 private:
     FILE* statFile;

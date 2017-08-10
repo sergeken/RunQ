@@ -77,15 +77,15 @@ ProcessFamily::operator!= (const ProcessFamily & right) const
 class Analyzer {
 public:
     void
-    report (std::ostream & Output = std::cout);
+    report (std::ostream & output = std::cout);
     void
     analyze (PerfData & rawData, const bool fixTimes,
-             DataStore* logFile = 0,
+             DataStore* logFile = nullptr,
              const int startHour = 0, const int startMinute = 0,
              const int endHour = 24, const int endMinute = 0);
     void
     analyze (const char name[], const bool fixTimes,
-             DataStore* logFile = 0,
+             DataStore* logFile = nullptr,
              const int startHour = 0, const int startMinute = 0,
              const int endHour = 24, const int endMinute = 0);
 
@@ -93,8 +93,7 @@ private:
     ProcessList
     processRawData (PerfData & rawData, const bool fixTimes,
                     const int startHour, const int startMinute,
-                    const int endHour, const int endMinute)
-    throw (RunQError);
+                    const int endHour, const int endMinute);
     std::pair <WorkLoad*, ProcessGroup*>
     findProcessGroup (const char name[], const char args[],
                       const char user[], const char group[]);
@@ -115,7 +114,7 @@ private:
     void
     addProcessToGroup (PerfData & rawData,
                        DataStore* const logFile,
-                       const WorkLoad & theWorkload,
+                       const WorkLoad & theWorkLoad,
                        ProcessGroup & theProcessGroup,
                        const ProcessData & theProcess);
 };

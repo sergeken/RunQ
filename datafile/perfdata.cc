@@ -36,14 +36,14 @@
 #include "perfdata.h"
 
 void
-PerfData::create (const char fileName[]) throw (RunQError)
+PerfData::create (const char fileName[])
 {
     dataStore.open ((char*)fileName, std::ios_base::binary | std::ios_base::out, RunQFileType::RawData);
     staticData.put (dataStore);
 }
 
 void
-PerfData::open (const char fileName[]) throw (RunQError)
+PerfData::open (const char fileName[])
 {
     dataStore.open ((char*)fileName, std::ios_base::binary | std::ios_base::in, RunQFileType::RawData);
     staticData.get (dataStore);
@@ -56,20 +56,20 @@ PerfData::close ()
 }
 
 void
-PerfData::get () throw (RunQError)
+PerfData::get ()
 {
     dynamicData.get (dataStore);
 }
 
 void
-PerfData::put () throw (RunQError)
+PerfData::put ()
 {
     dynamicData.put (dataStore);
 }
 
 
 void
-PerfData::sample (bool fullSample) throw (RunQError)
+PerfData::sample (bool fullSample)
 {
     throw (RunQError::NotSupported, "PerfData::sample");
 }

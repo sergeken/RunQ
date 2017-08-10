@@ -54,9 +54,9 @@ struct userLessThan {
 class StaticUserData {
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 public:
     int uid;
     char name[RUNQ_USERNAME_MAX];
@@ -65,25 +65,25 @@ public:
 class StaticUserList : public std::map<int, StaticUserData, userLessThan>{
 public:
     void
-    put (DataStore & dataStore) throw (RunQError);
+    put (DataStore & dataStore);
     void
-    get (DataStore & dataStore) throw (RunQError);
+    get (DataStore & dataStore);
 };
 
 inline void
-StaticUserData::put (DataStore & dataStore) throw (RunQError)
+StaticUserData::put (DataStore & dataStore)
 {
     dataStore.put (this, sizeof(*this));
 }
 
 inline void
-StaticUserData::get (DataStore & dataStore) throw (RunQError)
+StaticUserData::get (DataStore & dataStore)
 {
     dataStore.get (this, sizeof(*this));
 }
 
 inline void
-StaticUserList::put (DataStore & dataStore) throw (RunQError)
+StaticUserList::put (DataStore & dataStore)
 {
     size_t size = this->size ();
     dataStore.put (&size, sizeof(size));
@@ -93,7 +93,7 @@ StaticUserList::put (DataStore & dataStore) throw (RunQError)
 }
 
 inline void
-StaticUserList::get (DataStore & dataStore) throw (RunQError)
+StaticUserList::get (DataStore & dataStore)
 {
     size_t size;
     StaticUserData aUser;
